@@ -1,6 +1,6 @@
 ﻿namespace Sistema_de_Gestion_de_Rentas
 {
-    partial class Form1
+    partial class RegistroHuespedForm
     {
         /// <summary>
         /// Required designer variable.
@@ -28,10 +28,21 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Text = "Form1";
+            SuspendLayout();
+            // 
+            // RegistroHuespedForm
+            // 
+            AutoScaleDimensions = new SizeF(10F, 25F);
+            AutoScaleMode = AutoScaleMode.Font;
+            ClientSize = new Size(800, 450);
+            ControlBox = false;
+            FormBorderStyle = FormBorderStyle.None;
+            Name = "RegistroHuespedForm";
+            StartPosition = FormStartPosition.CenterScreen;
+            Text = "Registro de Huéspedes";
+            WindowState = FormWindowState.Maximized;
+            Load += RegistroHuespedForm_Load;
+            ResumeLayout(false);
         }
 
         #endregion
