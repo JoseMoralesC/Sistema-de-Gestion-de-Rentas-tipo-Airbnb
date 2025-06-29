@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Sistema_de_Gestion_de_Rentas.Services;
 
@@ -7,39 +8,70 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
 {
     public class RegistroHuespedForm : Form
     {
-        // Campos de entrada
+        [DllImport("Gdi32.dll", EntryPoint = "CreateRoundRectRgn")]
+        private static extern IntPtr CreateRoundRectRgn(
+            int nLeftRect, int nTopRect, int nRightRect, int nBottomRect,
+            int nWidthEllipse, int nHeightEllipse);
+
+        private System.Windows.Forms.Timer fadeInTimer;
+
         private TextBox txtIdentificacion, txtUsuario, txtContrasena, txtNombre,
                         txtPrimerApellido, txtSegundoApellido, txtCorreo,
                         txtTelefono, txtPaisOrigen;
 
         private Button btnGuardar;
+        private Button btnCerrar;
 
         public RegistroHuespedForm()
         {
             ConfigurarFormulario();
             InicializarUI();
+
+            // Aplicar estilos a controles creados
+            AplicarEstilos();
+
+            // Animación fade-in
+            Opacity = 0;
+            fadeInTimer = new System.Windows.Forms.Timer();
+            fadeInTimer.Interval = 1;
+            fadeInTimer.Tick += (s, e) =>
+            {
+                if (Opacity < 1)
+                    Opacity += 0.05;
+                else
+                    fadeInTimer.Stop();
+            };
+            fadeInTimer.Start();
         }
 
-        protected override void OnLoad(EventArgs e)
+        private void AplicarEstilos()
         {
-            base.OnLoad(e);
-            try
-            {
-                HuespedService.Inicializar();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error al inicializar la base de datos:\n" + ex.Message);
-            }
+            // Botones
+            EstilosUI.AplicarEstiloBoton(btnGuardar);
+            EstilosUI.AplicarEstiloBoton(btnCerrar);
+
+            // TextBoxes
+            EstilosUI.AplicarEstiloTextBox(txtIdentificacion);
+            EstilosUI.AplicarEstiloTextBox(txtUsuario);
+            EstilosUI.AplicarEstiloTextBox(txtContrasena);
+            EstilosUI.AplicarEstiloTextBox(txtNombre);
+            EstilosUI.AplicarEstiloTextBox(txtPrimerApellido);
+            EstilosUI.AplicarEstiloTextBox(txtSegundoApellido);
+            EstilosUI.AplicarEstiloTextBox(txtCorreo);
+            EstilosUI.AplicarEstiloTextBox(txtTelefono);
+            EstilosUI.AplicarEstiloTextBox(txtPaisOrigen);
         }
 
         private void ConfigurarFormulario()
         {
-            Text = "Registro de Huéspedes";
-            Size = new Size(600, 700);
-            StartPosition = FormStartPosition.CenterScreen;
-            FormBorderStyle = FormBorderStyle.FixedSingle;
-            MaximizeBox = false;
+            Text = "";
+            Size = new Size(550, 650);
+            StartPosition = FormStartPosition.CenterParent;
+            FormBorderStyle = FormBorderStyle.None;
+            BackColor = Color.White;
+
+            Region = Region.FromHrgn(CreateRoundRectRgn(0, 0, Width, Height, 20, 20));
+            Padding = new Padding(2);
         }
 
         private void InicializarUI()
@@ -58,8 +90,9 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
                 Label label = new Label
                 {
                     Text = etiquetas[i] + ":",
-                    Location = new Point(30, top),
-                    Size = new Size(150, 30)
+                    Location = new Point(30, top + 5),
+                    Size = new Size(150, 30),
+                    Font = new Font("Segoe UI", 10, FontStyle.Regular)
                 };
                 Controls.Add(label);
 
@@ -73,7 +106,7 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
                 top += 50;
             }
 
-            // Asignar referencias a campos
+            // Asignar referencias
             txtIdentificacion = campos[0];
             txtUsuario = campos[1];
             txtContrasena = campos[2];
@@ -89,10 +122,24 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
             {
                 Text = "Guardar Huésped",
                 Location = new Point(200, top + 20),
-                Size = new Size(200, 40)
+                Size = new Size(220, 50)
             };
             btnGuardar.Click += BtnGuardar_Click;
             Controls.Add(btnGuardar);
+
+            // Botón Cerrar (justo a la derecha de Guardar)
+            btnCerrar = new Button
+            {
+                Text = "Cerrar",
+                Location = new Point(btnGuardar.Right + 20, btnGuardar.Top),
+                Size = new Size(220, 50),
+                BackColor = Color.FromArgb(220, 20, 60), // Rojo un poco más suave
+                ForeColor = Color.White,
+                FlatStyle = FlatStyle.Flat
+            };
+            btnCerrar.FlatAppearance.BorderSize = 0;
+            btnCerrar.Click += (s, e) => this.Close();
+            Controls.Add(btnCerrar);
         }
 
         private void BtnGuardar_Click(object sender, EventArgs e)
