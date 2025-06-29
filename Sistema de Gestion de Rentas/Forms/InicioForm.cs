@@ -19,22 +19,19 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
             if (File.Exists(rutaFondo))
             {
                 this.BackgroundImage = Image.FromFile(rutaFondo);
-                this.BackgroundImageLayout = ImageLayout.Stretch; // o Zoom si prefieres
+                this.BackgroundImageLayout = ImageLayout.Stretch;
             }
             else
             {
                 MessageBox.Show("No se encontró la imagen de fondo.");
             }
 
-            // Configuración de pantalla completa y sin borde
             WindowState = FormWindowState.Maximized;
             FormBorderStyle = FormBorderStyle.None;
             BackColor = Color.White;
 
-            // Título centrado
             Label lblTitulo = new Label
             {
-                //Text = "¡Bienvenido!",
                 Font = new Font("Arial", 32, FontStyle.Bold),
                 ForeColor = Color.Black,
                 AutoSize = true
@@ -42,18 +39,16 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
             Controls.Add(lblTitulo);
             lblTitulo.Location = new Point((Screen.PrimaryScreen.Bounds.Width - lblTitulo.PreferredWidth) / 2, 100);
 
-            // Tamaño y radio para botones
             Size tamañoBoton = new Size(250, 60);
             int borderRadius = 15;
 
-            // Botón Iniciar Sesión
             btnIniciarSesion = new Button
             {
                 Text = "Iniciar Sesión",
                 Size = tamañoBoton,
                 Font = new Font("Arial", 14, FontStyle.Regular),
                 FlatStyle = FlatStyle.Flat,
-                BackColor = Color.FromArgb(70, 130, 180), // SteelBlue
+                BackColor = Color.FromArgb(70, 130, 180),
                 ForeColor = Color.White,
             };
             btnIniciarSesion.FlatAppearance.BorderSize = 0;
@@ -62,7 +57,6 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
             Controls.Add(btnIniciarSesion);
             AplicarBordesRedondeados(btnIniciarSesion, borderRadius);
 
-            // Botón Registrarse
             btnRegistrarse = new Button
             {
                 Text = "Registrarse",
@@ -78,14 +72,13 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
             Controls.Add(btnRegistrarse);
             AplicarBordesRedondeados(btnRegistrarse, borderRadius);
 
-            // Botón Cerrar (debajo de los otros dos)
             btnCerrar = new Button
             {
                 Text = "Cerrar",
                 Size = tamañoBoton,
                 Font = new Font("Arial", 14, FontStyle.Regular),
                 FlatStyle = FlatStyle.Flat,
-                BackColor = Color.FromArgb(220, 20, 60), // Crimson
+                BackColor = Color.FromArgb(220, 20, 60),
                 ForeColor = Color.White,
             };
             btnCerrar.FlatAppearance.BorderSize = 0;
@@ -112,37 +105,50 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
 
         private void BtnIniciarSesion_Click(object sender, EventArgs e)
         {
-            var loginForm = new LoginForm();
-            loginForm.Show();
-            this.Hide();
-        }
-
-        private void BtnRegistrarse_Click(object sender, EventArgs e)
-        {
-            // Fondo oscuro
-            Form fondoOscuro = new ModalBackgroundForm
+            var background = new ModalBackgroundForm
             {
                 StartPosition = FormStartPosition.Manual,
                 Size = this.ClientSize,
                 Location = this.PointToScreen(Point.Empty),
+                Owner = this,
+                TopMost = false
+            };
+            background.Show();
+
+            var loginForm = new LoginForm
+            {
+                StartPosition = FormStartPosition.CenterParent,
                 Owner = this
             };
 
-            fondoOscuro.Show(); // Mostrar fondo
+            loginForm.ShowDialog(this);
+            background.Close();
+        }
+
+        private void BtnRegistrarse_Click(object sender, EventArgs e)
+        {
+            var background = new ModalBackgroundForm
+            {
+                StartPosition = FormStartPosition.Manual,
+                Size = this.ClientSize,
+                Location = this.PointToScreen(Point.Empty),
+                Owner = this,
+                TopMost = false
+            };
+            background.Show();
 
             var registroForm = new RegistroHuespedForm
             {
-                StartPosition = FormStartPosition.CenterScreen, // o CenterParent si prefieres
-                TopMost = true // se mantiene arriba
+                StartPosition = FormStartPosition.CenterParent,
+                Owner = this
             };
 
-            // Mostrar como formulario no modal (Show), y manejar el cierre nosotros
             registroForm.FormClosed += (s, args) =>
             {
-                fondoOscuro.Close(); // Cerrar fondo oscuro al cerrar modal
+                background.Close();
             };
 
-            registroForm.Show(); // No bloquea
+            registroForm.ShowDialog(this);
         }
     }
 }
