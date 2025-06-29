@@ -168,12 +168,12 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
                     paisSeleccionado
                 );
 
-                MessageBox.Show("Huésped guardado exitosamente.");
+                CustomMessageBoxForm.Mostrar("Usuario guardado exitosamente.");
                 LimpiarCampos();
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error al guardar:\n" + ex.Message);
+                CustomMessageBoxForm.Mostrar("Error al guardar:\n" + ex.Message);
             }
         }
 

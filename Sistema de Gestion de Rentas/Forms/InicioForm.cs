@@ -23,7 +23,7 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
             }
             else
             {
-                MessageBox.Show("No se encontró la imagen de fondo.");
+                CustomMessageBoxForm.Mostrar("No se encontró la imagen de fondo.");
             }
 
             WindowState = FormWindowState.Maximized;

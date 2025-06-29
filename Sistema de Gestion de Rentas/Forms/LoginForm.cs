@@ -121,12 +121,17 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
 
             if (loginExitoso)
             {
-                MessageBox.Show("Inicio de sesión exitoso.");
+                CustomMessageBoxForm.Mostrar("Inicio de sesión exitoso.");
+                this.Hide();
+
+                var panel = new PanelHuespedForm();
+                panel.Show();
+
                 this.Close();
             }
             else
             {
-                MessageBox.Show("Usuario o contraseña incorrectos.");
+                CustomMessageBoxForm.Mostrar("Usuario o contraseña incorrectos.");
             }
         }
 
