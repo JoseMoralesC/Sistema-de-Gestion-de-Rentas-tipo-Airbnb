@@ -17,7 +17,9 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
 
         private TextBox txtIdentificacion, txtUsuario, txtContrasena, txtNombre,
                         txtPrimerApellido, txtSegundoApellido, txtCorreo,
-                        txtTelefono, txtPaisOrigen;
+                        txtTelefono;
+
+        private ComboBox cbPaisOrigen;
 
         private Button btnGuardar;
         private Button btnCerrar;
@@ -26,11 +28,8 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
         {
             ConfigurarFormulario();
             InicializarUI();
-
-            // Aplicar estilos a controles creados
             AplicarEstilos();
 
-            // Animación fade-in
             Opacity = 0;
             fadeInTimer = new System.Windows.Forms.Timer();
             fadeInTimer.Interval = 1;
@@ -44,32 +43,13 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
             fadeInTimer.Start();
         }
 
-        private void AplicarEstilos()
-        {
-            // Botones
-            EstilosUI.AplicarEstiloBoton(btnGuardar);
-            EstilosUI.AplicarEstiloBoton(btnCerrar);
-
-            // TextBoxes
-            EstilosUI.AplicarEstiloTextBox(txtIdentificacion);
-            EstilosUI.AplicarEstiloTextBox(txtUsuario);
-            EstilosUI.AplicarEstiloTextBox(txtContrasena);
-            EstilosUI.AplicarEstiloTextBox(txtNombre);
-            EstilosUI.AplicarEstiloTextBox(txtPrimerApellido);
-            EstilosUI.AplicarEstiloTextBox(txtSegundoApellido);
-            EstilosUI.AplicarEstiloTextBox(txtCorreo);
-            EstilosUI.AplicarEstiloTextBox(txtTelefono);
-            EstilosUI.AplicarEstiloTextBox(txtPaisOrigen);
-        }
-
         private void ConfigurarFormulario()
         {
             Text = "";
-            Size = new Size(550, 650);
+            Size = new Size(720, 750);
             StartPosition = FormStartPosition.CenterParent;
             FormBorderStyle = FormBorderStyle.None;
-            BackColor = Color.White;
-
+            BackColor = Color.FromArgb(45, 45, 48);
             Region = Region.FromHrgn(CreateRoundRectRgn(0, 0, Width, Height, 20, 20));
             Padding = new Padding(2);
         }
@@ -78,12 +58,15 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
         {
             string[] etiquetas = {
                 "Identificación", "Usuario", "Contraseña", "Nombre",
-                "Primer Apellido", "Segundo Apellido", "Correo",
-                "Teléfono", "País de Origen"
+                "1° Apellido", "2° Apellido", "Correo", "Teléfono", "País"
             };
 
-            TextBox[] campos = new TextBox[etiquetas.Length];
-            int top = 20;
+            TextBox[] campos = new TextBox[8]; // solo los 8 primeros serán TextBox
+            int top = 30;
+            int labelWidth = 160;
+            int spacing = 25;
+            int extraOffset = 40;
+            int textBoxX = 40 + labelWidth + spacing + extraOffset;
 
             for (int i = 0; i < etiquetas.Length; i++)
             {
@@ -91,22 +74,40 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
                 {
                     Text = etiquetas[i] + ":",
                     Location = new Point(30, top + 5),
-                    Size = new Size(150, 30),
-                    Font = new Font("Segoe UI", 10, FontStyle.Regular)
+                    Size = new Size(labelWidth, 30)
                 };
+                EstilosUI.AplicarEstiloLabel(label);
                 Controls.Add(label);
 
-                campos[i] = new TextBox
+                if (i < 8)
                 {
-                    Location = new Point(200, top),
-                    Size = new Size(300, 30)
-                };
-                Controls.Add(campos[i]);
+                    campos[i] = new TextBox
+                    {
+                        Location = new Point(textBoxX, top),
+                        Size = new Size(415, 35)
+                    };
+                    Controls.Add(campos[i]);
+                    EstilosUI.AplicarEstiloTextBox(campos[i]);
+                }
+                else
+                {
+                    cbPaisOrigen = new ComboBox
+                    {
+                        Location = new Point(textBoxX, top),
+                        Size = new Size(415, 35),
+                        DropDownStyle = ComboBoxStyle.DropDownList,
+                        Font = new Font("Segoe UI", 11)
+                    };
+                    cbPaisOrigen.Items.AddRange(new string[] {
+                        "Costa Rica", "México", "Argentina", "Colombia",
+                        "Chile", "Perú", "España", "Estados Unidos", "Otro"
+                    });
+                    Controls.Add(cbPaisOrigen);
+                }
 
-                top += 50;
+                top += 55;
             }
 
-            // Asignar referencias
             txtIdentificacion = campos[0];
             txtUsuario = campos[1];
             txtContrasena = campos[2];
@@ -115,37 +116,46 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
             txtSegundoApellido = campos[5];
             txtCorreo = campos[6];
             txtTelefono = campos[7];
-            txtPaisOrigen = campos[8];
 
             // Botón Guardar
             btnGuardar = new Button
             {
                 Text = "Guardar Huésped",
-                Location = new Point(200, top + 20),
-                Size = new Size(220, 50)
+                Size = new Size(250, 50),
+                Location = new Point((Width - 250) / 2, top + 30)
             };
+            EstilosUI.AplicarEstiloBoton(btnGuardar);
             btnGuardar.Click += BtnGuardar_Click;
             Controls.Add(btnGuardar);
 
-            // Botón Cerrar (justo a la derecha de Guardar)
+            // Botón Cerrar
             btnCerrar = new Button
             {
                 Text = "Cerrar",
-                Location = new Point(btnGuardar.Right + 20, btnGuardar.Top),
-                Size = new Size(220, 50),
-                BackColor = Color.FromArgb(220, 20, 60), // Rojo un poco más suave
+                Size = new Size(250, 50),
+                Location = new Point((Width - 250) / 2, btnGuardar.Bottom + 15),
+                BackColor = Color.FromArgb(220, 20, 60),
                 ForeColor = Color.White,
                 FlatStyle = FlatStyle.Flat
             };
             btnCerrar.FlatAppearance.BorderSize = 0;
+            btnCerrar.Region = Region.FromHrgn(CreateRoundRectRgn(0, 0, btnCerrar.Width, btnCerrar.Height, 15, 15));
             btnCerrar.Click += (s, e) => this.Close();
             Controls.Add(btnCerrar);
+        }
+
+        private void AplicarEstilos()
+        {
+            EstilosUI.AplicarEstiloBoton(btnGuardar);
+            EstilosUI.AplicarEstiloBoton(btnCerrar);
         }
 
         private void BtnGuardar_Click(object sender, EventArgs e)
         {
             try
             {
+                string paisSeleccionado = cbPaisOrigen.SelectedItem?.ToString() ?? "";
+
                 HuespedService.GuardarHuesped(
                     txtIdentificacion.Text.Trim(),
                     txtUsuario.Text.Trim(),
@@ -155,7 +165,7 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
                     txtSegundoApellido.Text.Trim(),
                     txtCorreo.Text.Trim(),
                     txtTelefono.Text.Trim(),
-                    txtPaisOrigen.Text.Trim()
+                    paisSeleccionado
                 );
 
                 MessageBox.Show("Huésped guardado exitosamente.");
@@ -177,7 +187,7 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
             txtSegundoApellido.Clear();
             txtCorreo.Clear();
             txtTelefono.Clear();
-            txtPaisOrigen.Clear();
+            cbPaisOrigen.SelectedIndex = -1;
         }
     }
 }
