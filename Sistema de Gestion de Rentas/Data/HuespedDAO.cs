@@ -34,7 +34,7 @@ namespace Sistema_de_Gestion_de_Rentas.Data
             }
             catch (Exception)
             {
-                // Aquí puedes loguear el error si lo necesitas en futuro
+                // Aquí se puede loguear el error si se necesita en el futuro
             }
         }
 
