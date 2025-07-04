@@ -156,6 +156,20 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
             {
                 string paisSeleccionado = cbPaisOrigen.SelectedItem?.ToString() ?? "";
 
+                // Validar si el nombre de usuario es "admin"
+                if (txtUsuario.Text.Trim().ToLower() == "admin")
+                {
+                    throw new ArgumentException("El nombre de usuario 'admin' está reservado y no puede ser utilizado.");
+                }
+
+                // Validar si el usuario o correo ya existen
+                if (!HuespedService.ValidarDisponibilidadUsuario(txtUsuario.Text.Trim()))
+                {
+                    throw new ArgumentException("El nombre de usuario ya está registrado.");
+                }
+
+
+                // Guardar el huesped
                 HuespedService.GuardarHuesped(
                     txtIdentificacion.Text.Trim(),
                     txtUsuario.Text.Trim(),

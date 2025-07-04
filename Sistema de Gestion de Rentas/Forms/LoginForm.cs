@@ -117,21 +117,55 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
             string usuario = txtUsuario.Text.Trim();
             string contrasena = txtContrasena.Text.Trim();
 
-            bool loginExitoso = HuespedService.VerificarCredenciales(usuario, contrasena);
-
-            if (loginExitoso)
+            try
             {
-                CustomMessageBoxForm.Mostrar("Inicio de sesión exitoso.");
-                this.Hide();
+                // Verificar las credenciales
+                bool loginExitoso = HuespedService.VerificarCredenciales(usuario, contrasena);
 
-                var panel = new PanelHuespedForm();
-                panel.Show();
+                if (loginExitoso)
+                {
+                    CustomMessageBoxForm.MostrarOpciones("Inicio de sesión exitoso.", "Aceptar", "");
 
-                this.Close();
+                    // Verificar si es Admin
+                    string rol = HuespedService.ObtenerRolUsuario(usuario);
+                    bool esAdmin = rol == "admin";
+
+                    if (esAdmin)
+                    {
+                        // Mostrar el cuadro de diálogo con las dos opciones
+                        DialogResult resultado = CustomMessageBoxForm.MostrarOpciones(
+                            "¿A qué panel desea acceder?",
+                            "Panel de Administrador",
+                            "Panel de Usuario"
+                        );
+
+                        if (resultado == DialogResult.Yes) // Panel Admin
+                        {
+                            var panelAdmin = new PanelAdministradorForm();  // Nuevo formulario de administrador
+                            panelAdmin.Show();
+                        }
+                        else // Panel Usuario
+                        {
+                            var panelHuesped = new PanelHuespedForm();
+                            panelHuesped.Show();
+                        }
+                    }
+                    else
+                    {
+                        var panelUsuario = new PanelHuespedForm();
+                        panelUsuario.Show();
+                    }
+
+                    this.Close();
+                }
+                else
+                {
+                    CustomMessageBoxForm.MostrarOpciones("Usuario o contraseña incorrectos.", "Aceptar", "");
+                }
             }
-            else
+            catch (Exception ex)
             {
-                CustomMessageBoxForm.Mostrar("Usuario o contraseña incorrectos.");
+                CustomMessageBoxForm.MostrarOpciones("Error al iniciar sesión:\n" + ex.Message, "Aceptar", "");
             }
         }
 

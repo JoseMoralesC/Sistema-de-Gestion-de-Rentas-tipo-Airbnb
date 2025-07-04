@@ -1,9 +1,5 @@
-using System;
-using System.Drawing;
-using System.IO;
-using System.Runtime.InteropServices;
-using System.Windows.Forms;
 using Sistema_de_Gestion_de_Rentas.Controls;
+using System.Runtime.InteropServices;
 
 namespace Sistema_de_Gestion_de_Rentas.Forms
 {
@@ -16,6 +12,7 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
 
         private Button btnCerrarSesion;
         private TableLayoutPanel provinciasTable;
+        private Label lblBienvenida;
         private Label lblMensaje;
         private PictureBox banner;
 
@@ -35,68 +32,34 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
 
         private void InicializarControles()
         {
-            btnCerrarSesion = new Button
-            {
-                Text = "Cerrar Sesión",
-                Size = new Size(200, 50),
-                Font = new Font("Arial", 12, FontStyle.Regular),
-                Location = new Point(50, 50),
-                BackColor = Color.FromArgb(220, 20, 60),
-                ForeColor = Color.White,
-                FlatStyle = FlatStyle.Flat
-            };
-            btnCerrarSesion.FlatAppearance.BorderSize = 0;
+            // Botón "Cerrar Sesión"
+            btnCerrarSesion = new Button();
+            EstilosPanelHuesped.EstiloBotonCerrarSesion(btnCerrarSesion);
+            btnCerrarSesion.Location = new Point(50, 50);
             btnCerrarSesion.Click += BtnCerrarSesion_Click;
             Controls.Add(btnCerrarSesion);
 
-            Label lblBienvenida = new Label
-            {
-                Text = "Bienvenido a su panel de usuario",
-                Font = new Font("Arial", 26, FontStyle.Bold),
-                AutoSize = true,
-                Location = new Point(50, 120)
-            };
+            // Etiqueta "Bienvenido"
+            lblBienvenida = new Label();
+            EstilosPanelHuesped.EstiloLabelBienvenida(lblBienvenida);
             Controls.Add(lblBienvenida);
 
-            banner = new PictureBox
-            {
-                Image = Image.FromFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources", "banner.jpg")),
-                SizeMode = PictureBoxSizeMode.StretchImage,
-                Location = new Point(50, 180),
-                Height = 200,
-                Width = this.ClientSize.Width - 100,
-                Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right
-            };
+            // Banner (Imagen)
+            banner = new PictureBox();
+            EstilosPanelHuesped.EstiloBanner(banner, Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources", "banner.jpg"), 200, this.ClientSize.Width - 100);
+            banner.Location = new Point(50, 180);
             Controls.Add(banner);
 
-            lblMensaje = new Label
-            {
-                Text = "Elige una de nuestras 7 provincias como tu próximo destino turístico",
-                Font = new Font("Arial", 14, FontStyle.Italic),
-                AutoSize = false,
-                TextAlign = ContentAlignment.MiddleCenter,
-                Location = new Point(50, banner.Bottom + 10),
-                Size = new Size(this.ClientSize.Width - 100, 30),
-                Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right
-            };
+            // Etiqueta de mensaje
+            lblMensaje = new Label();
+            EstilosPanelHuesped.EstiloLabelMensaje(lblMensaje);
+            lblMensaje.Location = new Point(50, banner.Bottom + 10);
             Controls.Add(lblMensaje);
 
-            provinciasTable = new TableLayoutPanel
-            {
-                Location = new Point(50, lblMensaje.Bottom + 20),
-                Size = new Size(this.ClientSize.Width - 100, 520), // Ajusta la altura que quieras para el grid
-                ColumnCount = 4,
-                RowCount = 2,
-                AutoScroll = true,
-                Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right
-            };
-
-            // Configurar filas y columnas para que sean proporcionales
-            for (int i = 0; i < provinciasTable.ColumnCount; i++)
-                provinciasTable.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25F));
-            for (int i = 0; i < provinciasTable.RowCount; i++)
-                provinciasTable.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
-
+            // TableLayoutPanel para Provincias
+            provinciasTable = new TableLayoutPanel();
+            EstilosPanelHuesped.EstiloTableLayoutPanelProvincias(provinciasTable);
+            provinciasTable.Location = new Point(50, lblMensaje.Bottom + 20);
             Controls.Add(provinciasTable);
 
             // Ajustar controles al redimensionar ventana
@@ -111,8 +74,8 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
         private void CargarProvincias()
         {
             string[] nombres = {
-                "Alajuela", "Cartago", "San José", "Heredia",
-                "Puntarenas", "Guanacaste", "Limón"
+                "Alajuela", "Cartago", "San Jose", "Heredia",
+                "Puntarenas", "Guanacaste", "Limon", "Costa Rica"
             };
 
             provinciasTable.Controls.Clear();
