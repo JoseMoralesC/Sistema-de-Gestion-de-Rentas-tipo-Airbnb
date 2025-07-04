@@ -5,12 +5,21 @@ namespace Sistema_de_Gestion_de_Rentas.Services
 {
     public static class HuespedService
     {
-        public static void Inicializar()
+        // Nuevo método para verificar las credenciales y obtener el rol en una sola operación
+        public static string VerificarCredencialesYObtenerRol(string usuario, string contrasena)
         {
-            // Aquí no es necesario crear la tabla si ya existe, así que eliminamos este llamado.
-            // HuespedDAO.CrearTablaHuespedes(); // Esto puede eliminarse
+            try
+            {
+                // Llamamos al método de HuespedDAO para obtener el rol por usuario y contrasena
+                return HuespedDAO.ObtenerRolPorUsuarioYContrasena(usuario, contrasena);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al verificar las credenciales: " + ex.Message);
+            }
         }
 
+        // Método para guardar un nuevo huésped
         public static void GuardarHuesped(
             string identificacion,
             string usuario,
@@ -52,29 +61,14 @@ namespace Sistema_de_Gestion_de_Rentas.Services
             }
         }
 
+        // Método que valida las credenciales de inicio de sesión
         public static bool VerificarCredenciales(string usuario, string contrasena)
         {
             // Verifica si las credenciales son correctas
             return HuespedDAO.ValidarLogin(usuario, contrasena);
         }
 
-        public static bool EsAdmin(string usuario)
-        {
-            // Comprobar si el usuario tiene el rol de Administrador
-            try
-            {
-                var huesped = HuespedDAO.ObtenerHuespedPorUsuario(usuario);
-
-                // Verificamos si el rol es "admin"
-                return huesped != null && huesped.Rol == "admin"; // Ahora se verifica el rol directamente
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Error al verificar el rol de usuario: " + ex.Message);
-            }
-        }
-
-        // Nuevo método para obtener el rol de un usuario
+        // Método que obtiene el rol de un usuario
         public static string ObtenerRolUsuario(string usuario)
         {
             try
@@ -90,6 +84,22 @@ namespace Sistema_de_Gestion_de_Rentas.Services
             catch (Exception ex)
             {
                 throw new Exception("Error al obtener el rol de usuario: " + ex.Message);
+            }
+        }
+
+        // Método que valida si el usuario tiene rol de administrador
+        public static bool EsAdmin(string usuario)
+        {
+            try
+            {
+                var huesped = HuespedDAO.ObtenerHuespedPorUsuario(usuario);
+
+                // Verificamos si el rol es "admin"
+                return huesped != null && huesped.Rol == "admin"; // Ahora se verifica el rol directamente
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al verificar el rol de usuario: " + ex.Message);
             }
         }
 

@@ -5,8 +5,8 @@ namespace Sistema_de_Gestion_de_Rentas.Data
 {
     public class HuespedDAO
     {
-        // Método para crear la tabla de huéspedes
-        public static void CrearTablaHuespedes()
+        // Método para obtener las credenciales y el rol del usuario en una sola consulta
+        public static string ObtenerRolPorUsuarioYContrasena(string usuario, string contrasena)
         {
             try
             {
@@ -14,33 +14,36 @@ namespace Sistema_de_Gestion_de_Rentas.Data
                 using (var conn = conexion.ObtenerConexion())
                 {
                     string sql = @"
-                        CREATE TABLE IF NOT EXISTS Huespedes (
-                            identificacion VARCHAR(20) PRIMARY KEY,
-                            usuario VARCHAR(30) UNIQUE NOT NULL,
-                            contrasena VARCHAR(100) NOT NULL,
-                            nombre VARCHAR(50) NOT NULL,
-                            primer_apellido VARCHAR(50) NOT NULL,
-                            segundo_apellido VARCHAR(50),
-                            correo VARCHAR(100),
-                            telefono VARCHAR(20),
-                            pais_origen VARCHAR(50),
-                            rol VARCHAR(20) DEFAULT 'huesped'
-                        );
+                        SELECT rol FROM Huespedes
+                        WHERE usuario = @usuario AND contrasena = @contrasena
+                        LIMIT 1;
                     ";
 
                     using (var cmd = new NpgsqlCommand(sql, conn))
                     {
-                        cmd.ExecuteNonQuery();
+                        cmd.Parameters.AddWithValue("@usuario", usuario);
+                        cmd.Parameters.AddWithValue("@contrasena", contrasena);
+
+                        // Ejecutamos la consulta y obtenemos el rol
+                        var result = cmd.ExecuteScalar();
+                        if (result != null)
+                        {
+                            return result.ToString(); // Retorna el rol si la consulta es exitosa
+                        }
                     }
                 }
             }
             catch (Exception ex)
             {
-                Console.Error.WriteLine($"Error al crear tabla: {ex.Message}");
+                Console.Error.WriteLine($"Error al obtener rol por usuario y contraseña: {ex.Message}");
+                return null; // Retorna null si ocurre un error
             }
+
+            return null; // Si no se encuentra usuario o contrasena, retornamos null
         }
 
-        // Método para verificar si el usuario, nombre o correo ya existen en la base de datos
+        // Otros métodos...
+
         public static bool VerificarUsuarioExistente(string usuario, string nombre, string correo)
         {
             try
@@ -71,7 +74,6 @@ namespace Sistema_de_Gestion_de_Rentas.Data
             }
         }
 
-        // Método para insertar un nuevo huésped
         public static void InsertarHuesped(
             string identificacion,
             string usuario,
@@ -82,15 +84,13 @@ namespace Sistema_de_Gestion_de_Rentas.Data
             string correo,
             string telefono,
             string paisOrigen,
-            string rol = "huesped") // Asignamos el rol por defecto
+            string rol = "huesped")
         {
-            // Validar que no se use el nombre de usuario "admin"
             if (usuario.ToLower() == "admin")
             {
                 throw new ArgumentException("El nombre de usuario 'Admin' está reservado.");
             }
 
-            // Verificar si ya existe un admin en la base de datos
             if (rol.ToLower() == "admin")
             {
                 if (ExisteAdmin())
@@ -99,7 +99,6 @@ namespace Sistema_de_Gestion_de_Rentas.Data
                 }
             }
 
-            // Verificar si el usuario, nombre o correo ya están registrados
             if (VerificarUsuarioExistente(usuario, nombre, correo))
             {
                 throw new ArgumentException("El nombre de usuario, nombre o correo ya están registrados.");
@@ -146,7 +145,6 @@ namespace Sistema_de_Gestion_de_Rentas.Data
             }
         }
 
-        // Método para verificar si ya existe un usuario con el rol de Admin en la base de datos
         private static bool ExisteAdmin()
         {
             try
@@ -169,11 +167,10 @@ namespace Sistema_de_Gestion_de_Rentas.Data
             catch (Exception ex)
             {
                 Console.Error.WriteLine($"Error al verificar si existe un admin: {ex.Message}");
-                return true; // Consideramos que existe si ocurre un error
+                return true;
             }
         }
 
-        // Método para validar el login de un usuario
         public static bool ValidarLogin(string usuario, string contrasena)
         {
             try
@@ -203,7 +200,6 @@ namespace Sistema_de_Gestion_de_Rentas.Data
             }
         }
 
-        // Método para obtener los detalles completos de un huésped por su nombre de usuario
         public static Huesped ObtenerHuespedPorUsuario(string usuario)
         {
             try
@@ -227,7 +223,6 @@ namespace Sistema_de_Gestion_de_Rentas.Data
                             {
                                 return new Huesped(
                                     reader.GetString(reader.GetOrdinal("identificacion")),
-
                                     reader.GetString(reader.GetOrdinal("usuario")),
                                     reader.GetString(reader.GetOrdinal("contrasena")),
                                     reader.GetString(reader.GetOrdinal("nombre")),
