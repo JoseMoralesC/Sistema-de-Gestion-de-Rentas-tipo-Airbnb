@@ -1,5 +1,9 @@
 using Sistema_de_Gestion_de_Rentas.Controls;
+using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Runtime.InteropServices;
+using System.Windows.Forms;
 
 namespace Sistema_de_Gestion_de_Rentas.Forms
 {
@@ -122,9 +126,31 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
 
         private void AbrirFormularioProvincia(string provincia)
         {
-            MessageBox.Show($"Abrir hospedajes de {provincia}...");
-            // Aquí podrías hacer: new HospedajesProvinciaForm(provincia).Show();
+            // Usamos el CustomMessageBoxForm
+            DialogResult result = CustomMessageBoxForm.MostrarOpciones($"¿Deseas abrir los hospedajes de {provincia}?", "Sí", "No");
+
+            if (result == DialogResult.Yes)
+            {
+                // Diccionario para mapear provincias a formularios
+                var formulariosProvincia = new Dictionary<string, Type>
+        {
+            { "Cartago", typeof(ProvinciaForms.CartagoForm) },
+            // Agrega las demás provincias aquí
+        };
+
+                if (formulariosProvincia.ContainsKey(provincia))
+                {
+                    // Crear la instancia del formulario correspondiente
+                    var formulario = (Form)Activator.CreateInstance(formulariosProvincia[provincia]);
+                    formulario.Show();
+                }
+                else
+                {
+                    CustomMessageBoxForm.Mostrar("Formulario no encontrado.");
+                }
+            }
         }
+
 
         private void BtnCerrarSesion_Click(object sender, EventArgs e)
         {
