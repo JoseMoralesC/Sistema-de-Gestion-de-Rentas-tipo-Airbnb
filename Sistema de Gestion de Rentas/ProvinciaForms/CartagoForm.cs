@@ -94,7 +94,7 @@ namespace Sistema_de_Gestion_de_Rentas.ProvinciaForms
             provinciasTable.Margin = new Padding(10);  // Aumentamos el espacio entre las celdas
             contentPanel.Controls.Add(provinciasTable);
 
-            // Cargar los hospedajes
+            // Cargar los hospedajes desde la lógica
             CargarHospedajes();
 
             // Ajustar controles al redimensionar ventana
@@ -110,8 +110,8 @@ namespace Sistema_de_Gestion_de_Rentas.ProvinciaForms
 
         private void CargarHospedajes()
         {
-            // Lista de nombres de los hospedajes
-            string[] nombresHospedajes = { "Hotel Cartago", "Hotel Oroci", "Hostal Ujarras", "Hospedaje Irazu" };
+            // Obtener los hospedajes de Cartago desde la lógica
+            var hospedajes = HospedajeLogic.ObtenerHospedajePorProvincia("Cartago");
 
             provinciasTable.Controls.Clear();  // Limpiar la tabla de la UI
 
@@ -119,19 +119,19 @@ namespace Sistema_de_Gestion_de_Rentas.ProvinciaForms
             int totalCeldas = provinciasTable.RowCount * provinciasTable.ColumnCount;
             for (int i = 0; i < totalCeldas; i++)
             {
-                ProvinciaCard card;  // Puedes seguir usando ProvinciaCard si lo deseas para representar los hospedajes
+                ProvinciaCard card;
 
-                if (i < nombresHospedajes.Length)
+                if (i < hospedajes.Count)
                 {
-                    string nombreHospedaje = nombresHospedajes[i];
+                    var hospedaje = hospedajes.Values.ElementAt(i);
                     card = new ProvinciaCard
                     {
-                        Titulo = nombreHospedaje,
-                        Imagen = CargarImagenHospedaje(nombreHospedaje.ToLower().Replace(" ", "")) // Cambié el método para reflejar hospedaje
+                        Titulo = hospedaje.Nombre,
+                        Imagen = CargarImagenHospedaje(hospedaje.Nombre.ToLower().Replace(" ", "")) // Cambié el método para reflejar hospedaje
                     };
 
                     // Asignar el evento de clic para abrir el formulario de reservación cuando se selecciona el hospedaje
-                    card.CardClick += (s, e) => AbrirFormularioReservas(nombreHospedaje); // Cambié el nombre del método aquí
+                    card.CardClick += (s, e) => AbrirFormularioReservas(hospedaje);
                 }
                 else
                 {
@@ -167,23 +167,18 @@ namespace Sistema_de_Gestion_de_Rentas.ProvinciaForms
             }
         }
 
-        private void AbrirFormularioReservas(string reservas)
+        private void AbrirFormularioReservas(Hospedaje hospedaje)
         {
             // Usamos el CustomMessageBoxForm para mostrar la opción de confirmación
-            DialogResult result = CustomMessageBoxForm.MostrarOpciones($"¿Desea hospedarse en: {reservas}?", "Sí", "No");
+            DialogResult result = CustomMessageBoxForm.MostrarOpciones($"¿Desea hospedarse en: {hospedaje.Nombre}?", "Sí", "No");
 
             if (result == DialogResult.Yes)
             {
-                // Solo se abre el formulario de reservación si el nombre del hospedaje es válido
-                string nombreHospedaje = reservas;  // Usamos el nombre del hospedaje
-                decimal precioHospedaje = 100.00m;  // Precio de ejemplo para el hospedaje
-
-                // Crear y mostrar el formulario de reservación
-                ReservacionForm reservacionForm = new ReservacionForm(nombreHospedaje, precioHospedaje);
+                // Crear y mostrar el formulario de reservación con toda la información del hospedaje
+                ReservacionForm reservacionForm = new ReservacionForm(hospedaje.Nombre, hospedaje.PrecioPorNoche);
                 reservacionForm.ShowDialog();  // Usamos ShowDialog() para hacerlo modal
             }
         }
-
 
         private void BtnRegresar_Click(object sender, EventArgs e)
         {
