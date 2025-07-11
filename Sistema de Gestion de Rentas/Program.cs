@@ -10,7 +10,9 @@ namespace Sistema_de_Gestion_de_Rentas
         static void Main()
         {
             ApplicationConfiguration.Initialize();
-      
+
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new InicioForm());
 
         }

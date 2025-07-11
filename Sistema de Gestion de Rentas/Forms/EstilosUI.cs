@@ -43,4 +43,32 @@ public static class EstilosUI
         lbl.ForeColor = Color.White;
         lbl.BackColor = Color.Transparent;
     }
+
+    public static void AplicarEstiloFormulario(Form form)
+    {
+        form.BackColor = Color.FromArgb(40, 40, 40); // Fondo oscuro moderno
+        form.Font = new Font("Segoe UI", 10, FontStyle.Regular);
+    }
+
+    public static void AplicarEstiloDataGridView(DataGridView dgv)
+    {
+        dgv.EnableHeadersVisualStyles = false;
+        dgv.BackgroundColor = Color.White;
+        dgv.BorderStyle = BorderStyle.None;
+        dgv.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.Single;
+
+        dgv.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(30, 144, 255);
+        dgv.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
+        dgv.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 10, FontStyle.Bold);
+        dgv.DefaultCellStyle.Font = new Font("Segoe UI", 10);
+        dgv.DefaultCellStyle.ForeColor = Color.Black;
+        dgv.DefaultCellStyle.BackColor = Color.White;
+        dgv.DefaultCellStyle.SelectionBackColor = Color.FromArgb(173, 216, 230);
+        dgv.DefaultCellStyle.SelectionForeColor = Color.Black;
+
+        dgv.GridColor = Color.LightGray;
+        dgv.RowHeadersVisible = false;
+        dgv.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+    }
+
 }
