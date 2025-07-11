@@ -33,13 +33,14 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
         private void ConfigurarFormulario()
         {
             this.Text = "";
-            this.Size = new Size(1000, 700); // más ancho y alto
+            this.Size = new Size(1000, 700);
             this.StartPosition = FormStartPosition.CenterParent;
             this.FormBorderStyle = FormBorderStyle.None;
             this.BackColor = Color.FromArgb(25, 25, 35);
             this.Region = Region.FromHrgn(CreateRoundRectRgn(0, 0, Width, Height, 20, 20));
 
-            this.MouseDown += (s, e) => {
+            this.MouseDown += (s, e) =>
+            {
                 if (e.Button == MouseButtons.Left)
                 {
                     ReleaseCapture();
@@ -47,7 +48,6 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
                 }
             };
 
-            // Título
             lblTitulo = new Label
             {
                 Text = "Provincias de Costa Rica",
@@ -59,7 +59,6 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
             EstilosUI.AplicarEstiloLabel(lblTitulo);
             Controls.Add(lblTitulo);
 
-            // DataGridView
             dgvProvincias = new DataGridView
             {
                 Location = new Point(20, 70),
@@ -75,7 +74,6 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
             EstilosUI.AplicarEstiloDataGridView(dgvProvincias);
             Controls.Add(dgvProvincias);
 
-            // Botones
             int btnHeight = 50, spacing = 15;
             int baseY = dgvProvincias.Bottom + 20;
             int totalBtn = 5;
@@ -106,9 +104,10 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
             try
             {
                 using var conn = new Conexion().ObtenerConexion();
+                // conn.Open(); // Solo si es necesario
                 string query = "SELECT id, id_provincia, nombre FROM provincias ORDER BY id";
-                using var cmd = new Npgsql.NpgsqlCommand(query, conn);
-                using var adapter = new Npgsql.NpgsqlDataAdapter(cmd);
+                using var cmd = new NpgsqlCommand(query, conn);
+                using var adapter = new NpgsqlDataAdapter(cmd);
                 var dt = new DataTable();
                 adapter.Fill(dt);
                 dgvProvincias.DataSource = dt;
@@ -120,25 +119,22 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
             }
             catch (Exception ex)
             {
-                MessageBox.Show(this, "Error al cargar datos: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MostrarCustomMessageBox("Error al cargar datos: " + ex.Message, "Error", MessageBoxButtons.OK);
             }
         }
 
         private void BtnAgregar_Click(object sender, EventArgs e)
         {
             using var input = new ProvinciaInputForm("Agregar Provincia") { Owner = this };
-            this.Top += 120; // baja el padre al mostrar el modal
-            input.Owner = this;
             input.ShowDialog(this);
-            this.Top -= 120; // lo regresa al cerrar
 
-            if (input.ShowDialog(this) == DialogResult.OK)
+            if (input.DialogResult == DialogResult.OK)
             {
                 try
                 {
                     using var conn = new Conexion().ObtenerConexion();
                     string q = "INSERT INTO provincias (id_provincia, nombre) VALUES (@cod, @nom)";
-                    using var cmd = new Npgsql.NpgsqlCommand(q, conn);
+                    using var cmd = new NpgsqlCommand(q, conn);
                     cmd.Parameters.AddWithValue("cod", input.CodigoProvincia);
                     cmd.Parameters.AddWithValue("nom", input.ProvinciaNombre);
                     cmd.ExecuteNonQuery();
@@ -146,17 +142,16 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(this, "Error al agregar: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MostrarCustomMessageBox("Error al agregar: " + ex.Message, "Error", MessageBoxButtons.OK);
                 }
             }
         }
 
         private void BtnEditar_Click(object sender, EventArgs e)
         {
-
             if (dgvProvincias.SelectedRows.Count == 0)
             {
-                MessageBox.Show(this, "Selecciona una provincia.", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MostrarCustomMessageBox("Selecciona una provincia.", "Atención", MessageBoxButtons.OK);
                 return;
             }
 
@@ -166,18 +161,15 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
             string nom = row.Cells["nombre"].Value.ToString();
 
             using var input = new ProvinciaInputForm("Editar Provincia", cod, nom) { Owner = this };
-            this.Top += 120; // baja el padre al mostrar el modal
-            input.Owner = this;
             input.ShowDialog(this);
-            this.Top -= 120; // lo regresa al cerrar
 
-            if (input.ShowDialog(this) == DialogResult.OK)
+            if (input.DialogResult == DialogResult.OK)
             {
                 try
                 {
                     using var conn = new Conexion().ObtenerConexion();
                     string q = "UPDATE provincias SET id_provincia = @cod, nombre = @nom WHERE id = @id";
-                    using var cmd = new Npgsql.NpgsqlCommand(q, conn);
+                    using var cmd = new NpgsqlCommand(q, conn);
                     cmd.Parameters.AddWithValue("cod", input.CodigoProvincia);
                     cmd.Parameters.AddWithValue("nom", input.ProvinciaNombre);
                     cmd.Parameters.AddWithValue("id", id);
@@ -186,7 +178,7 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(this, "Error al actualizar: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MostrarCustomMessageBox("Error al actualizar: " + ex.Message, "Error", MessageBoxButtons.OK);
                 }
             }
         }
@@ -195,29 +187,36 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
         {
             if (dgvProvincias.SelectedRows.Count == 0)
             {
-                MessageBox.Show(this, "Selecciona una provincia.", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MostrarCustomMessageBox("Selecciona una provincia.", "Atención", MessageBoxButtons.OK);
                 return;
             }
+
             var row = dgvProvincias.SelectedRows[0];
             int id = Convert.ToInt32(row.Cells["id"].Value);
             string nom = row.Cells["nombre"].Value.ToString();
-
-            if (MessageBox.Show(this, $"¿Eliminar '{nom}'?", "Confirmar", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
-                return;
 
             try
             {
                 using var conn = new Conexion().ObtenerConexion();
                 string q = "DELETE FROM provincias WHERE id = @id";
-                using var cmd = new Npgsql.NpgsqlCommand(q, conn);
+                using var cmd = new NpgsqlCommand(q, conn);
                 cmd.Parameters.AddWithValue("id", id);
                 cmd.ExecuteNonQuery();
                 CargarDatos();
+
+                // Mensaje de confirmación después de eliminar
+                MostrarCustomMessageBox($"Provincia '{nom}' eliminada.", "Información", MessageBoxButtons.OK);
             }
             catch (Exception ex)
             {
-                MessageBox.Show(this, "Error al eliminar: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MostrarCustomMessageBox("Error al eliminar: " + ex.Message, "Error", MessageBoxButtons.OK);
             }
+        }
+
+        private DialogResult MostrarCustomMessageBox(string mensaje, string titulo = "Mensaje", MessageBoxButtons botones = MessageBoxButtons.OK)
+        {
+            // Siempre mostramos un mensaje con botón OK solo
+            return CustomMessageBoxForm.Mostrar(this, mensaje);
         }
     }
 }

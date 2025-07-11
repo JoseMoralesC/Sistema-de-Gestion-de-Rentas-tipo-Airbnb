@@ -15,12 +15,16 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
         private Label lblMensaje;
         private Button btnSi, btnNo;
 
+        private bool _showTwoButtons = false;
+        private string _opcion1 = "Sí";
+        private string _opcion2 = "No";
+
         public CustomMessageBoxForm(string mensaje, string titulo = "Mensaje")
         {
             Text = titulo;
             Size = new Size(400, 200);
             FormBorderStyle = FormBorderStyle.None;
-            StartPosition = FormStartPosition.CenterScreen;
+            StartPosition = FormStartPosition.CenterParent;
             BackColor = Color.FromArgb(45, 45, 48);
             ForeColor = Color.White;
 
@@ -37,63 +41,104 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
             };
             Controls.Add(lblMensaje);
 
-            Load += CustomMessageBoxForm_Load; // Manejamos la carga de los botones aquí
-        }
-
-        private void CustomMessageBoxForm_Load(object sender, EventArgs e)
-        {
-            // Botón Sí (Panel de Administrador)
             btnSi = new Button
             {
-                Text = "Panel de Administrador",
                 Size = new Size(160, 40),
                 BackColor = Color.FromArgb(70, 130, 180),
                 FlatStyle = FlatStyle.Flat,
-                ForeColor = Color.White
+                ForeColor = Color.White,
+                DialogResult = DialogResult.Yes
             };
             btnSi.FlatAppearance.BorderSize = 0;
-            btnSi.DialogResult = DialogResult.Yes;
             Controls.Add(btnSi);
 
-            // Botón No (Panel de Usuario)
             btnNo = new Button
             {
-                Text = "Panel de Usuario",
                 Size = new Size(160, 40),
                 BackColor = Color.FromArgb(70, 130, 180),
                 FlatStyle = FlatStyle.Flat,
-                ForeColor = Color.White
+                ForeColor = Color.White,
+                DialogResult = DialogResult.No
             };
             btnNo.FlatAppearance.BorderSize = 0;
-            btnNo.DialogResult = DialogResult.No;
             Controls.Add(btnNo);
 
-            // Establecer posiciones de los botones
             int padding = 10;
-            int buttonWidth = btnSi.Width;
-            int totalWidth = buttonWidth * 2 + padding;
+            int totalWidth = btnSi.Width * 2 + padding;
             int startX = (ClientSize.Width - totalWidth) / 2;
 
             btnSi.Location = new Point(startX, ClientSize.Height - 70);
             btnNo.Location = new Point(btnSi.Right + padding, ClientSize.Height - 70);
+
+            if (_showTwoButtons)
+            {
+                btnSi.Text = _opcion1;
+                btnSi.DialogResult = DialogResult.Yes;
+
+                btnNo.Text = _opcion2;
+                btnNo.DialogResult = DialogResult.No;
+
+                btnSi.Visible = true;
+                btnNo.Visible = true;
+            }
+            else
+            {
+                btnSi.Text = "OK";
+                btnSi.DialogResult = DialogResult.OK;
+                btnSi.Visible = true;
+                btnNo.Visible = false;
+            }
+
+            AcceptButton = btnSi;
+            CancelButton = btnNo;
+
+            // *** Estas líneas aseguran que el formulario esté siempre al frente ***
+            this.TopMost = true;
+            this.Activate();
         }
 
-        // Método para mostrar opciones (con títulos personalizados)
-        public static DialogResult MostrarOpciones(string mensaje, string opcion1, string opcion2)
+        protected override void OnShown(EventArgs e)
         {
-            using (var box = new CustomMessageBoxForm(mensaje))
-            {
-                return box.ShowDialog();
-            }
+            base.OnShown(e);
+            this.TopMost = true;
+            this.BringToFront();
+            this.Activate();
         }
 
-        // Sobrecarga del método Mostrar para aceptar solo el mensaje
-        public static void Mostrar(string mensaje)
+        // Mostrar mensaje simple (sin dueño)
+        public static DialogResult Mostrar(string mensaje)
         {
-            using (var box = new CustomMessageBoxForm(mensaje))
-            {
-                box.ShowDialog();
-            }
+            using var box = new CustomMessageBoxForm(mensaje);
+            box._showTwoButtons = false;
+            return box.ShowDialog();
+        }
+
+        // Mostrar mensaje simple (con dueño)
+        public static DialogResult Mostrar(IWin32Window owner, string mensaje)
+        {
+            using var box = new CustomMessageBoxForm(mensaje);
+            box._showTwoButtons = false;
+            return box.ShowDialog(owner);
+        }
+
+        // Mostrar mensaje con opciones Sí / No (sin dueño)
+        public static DialogResult MostrarOpciones(string mensaje, string opcion1 = "Sí", string opcion2 = "No")
+        {
+            using var box = new CustomMessageBoxForm(mensaje);
+            box._showTwoButtons = true;
+            box._opcion1 = opcion1;
+            box._opcion2 = opcion2;
+            return box.ShowDialog();
+        }
+
+        // Mostrar mensaje con opciones Sí / No (con dueño)
+        public static DialogResult MostrarOpciones(IWin32Window owner, string mensaje, string opcion1 = "Sí", string opcion2 = "No")
+        {
+            using var box = new CustomMessageBoxForm(mensaje);
+            box._showTwoButtons = true;
+            box._opcion1 = opcion1;
+            box._opcion2 = opcion2;
+            return box.ShowDialog(owner);
         }
     }
 }
