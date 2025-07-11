@@ -17,7 +17,6 @@ public static class EstilosUI
         boton.BackColor = Color.FromArgb(30, 144, 255);
         boton.ForeColor = Color.White;
         boton.Font = new Font("Segoe UI", 12, FontStyle.Bold);
-        // El tamaño del botón lo defines en el formulario, aquí no lo fijamos
         boton.Region = Region.FromHrgn(CreateRoundRectRgn(0, 0, boton.Width, boton.Height, 15, 15));
         boton.MouseEnter += (s, e) => boton.BackColor = Color.FromArgb(65, 105, 225);
         boton.MouseLeave += (s, e) => boton.BackColor = Color.FromArgb(30, 144, 255);
@@ -29,10 +28,9 @@ public static class EstilosUI
         txt.BackColor = Color.White;
         txt.ForeColor = Color.Black;
         txt.BorderStyle = BorderStyle.None;
-        txt.Multiline = false;   // Si sólo quieres una línea
+        txt.Multiline = false;
         txt.Height = 35;
         txt.TextAlign = HorizontalAlignment.Left;
-        // Redondear bordes
         txt.Region = Region.FromHrgn(CreateRoundRectRgn(0, 0, txt.Width, txt.Height, 10, 10));
         txt.Padding = new Padding(8, 5, 8, 5);
     }
@@ -46,7 +44,7 @@ public static class EstilosUI
 
     public static void AplicarEstiloFormulario(Form form)
     {
-        form.BackColor = Color.FromArgb(40, 40, 40); // Fondo oscuro moderno
+        form.BackColor = Color.FromArgb(40, 40, 40);
         form.Font = new Font("Segoe UI", 10, FontStyle.Regular);
     }
 
@@ -71,4 +69,27 @@ public static class EstilosUI
         dgv.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
     }
 
+    // Nuevo método para NumericUpDown
+    public static void AplicarEstiloNumericUpDown(NumericUpDown nud)
+    {
+        nud.Font = new Font("Segoe UI", 11);
+        nud.BackColor = Color.White;
+        nud.ForeColor = Color.Black;
+        nud.BorderStyle = BorderStyle.FixedSingle;
+        nud.TextAlign = HorizontalAlignment.Left;
+        nud.Size = new Size(nud.Width, 35);
+        // No se puede redondear bordes fácilmente, pero puedes ajustar otros estilos
+    }
+
+    // Nuevo método para ComboBox
+    public static void AplicarEstiloComboBox(ComboBox cb)
+    {
+        cb.Font = new Font("Segoe UI", 11);
+        cb.BackColor = Color.White;
+        cb.ForeColor = Color.Black;
+        cb.FlatStyle = FlatStyle.Flat;
+        cb.DropDownStyle = ComboBoxStyle.DropDownList;
+        cb.Region = Region.FromHrgn(CreateRoundRectRgn(0, 0, cb.Width, cb.Height, 10, 10));
+        cb.Padding = new Padding(8, 5, 8, 5);
+    }
 }

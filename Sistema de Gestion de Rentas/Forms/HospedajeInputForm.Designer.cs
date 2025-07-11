@@ -1,6 +1,6 @@
 ﻿namespace Sistema_de_Gestion_de_Rentas.Forms
 {
-    partial class HospedajesForm
+    partial class HospedajeInputForm
     {
         /// <summary>
         /// Required designer variable.
@@ -31,7 +31,7 @@
             this.components = new System.ComponentModel.Container();
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Text = "HospedajeForm";
+            this.Text = "HospedajeInputForm";
         }
 
         #endregion
