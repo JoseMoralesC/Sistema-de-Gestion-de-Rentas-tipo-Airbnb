@@ -9,7 +9,10 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
 {
     public partial class HospedajeInputForm : Form
     {
-        // Propiedades públicas
+        // Ya no es necesario el DllImport para el redondeo de esquinas
+        // [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        // public static extern IntPtr CreateRoundRectRgn(int nLeftRect, int nTopRect, int nRightRect, int nBottomRect, int nWidthEllipse, int nHeightEllipse);
+
         public int ProvinciaId { get; private set; }
         public string Nombre { get; private set; }
         public string Ubicacion { get; private set; }
@@ -24,17 +27,20 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
         private NumericUpDown nudPrecio, nudCapacidad, nudHabitaciones;
         private Button btnAceptar, btnCancelar;
 
-        // Constructor que acepta parámetros (nuevo y existente)
         public HospedajeInputForm(string titulo,
             int provinciaId = 0, string nombre = "", string ubicacion = "",
             decimal precioPorNoche = 0, int capacidad = 1, int habitaciones = 1,
             string descripcion = "")
         {
+            // Inicialización del formulario
             Text = titulo;
-            Size = new Size(500, 600);  // Reducido para reflejar que no hay ComboBox de estado
-            FormBorderStyle = FormBorderStyle.None;
+            Size = new Size(600, 900);  // Aumento la altura del formulario
+            FormBorderStyle = FormBorderStyle.None;  // No bordes
             StartPosition = FormStartPosition.CenterParent;
             BackColor = Color.FromArgb(25, 25, 35);
+
+            // Eliminamos la región redondeada para mantener las esquinas rectas
+            // this.Region = Region.FromHrgn(CreateRoundRectRgn(0, 0, this.Width, this.Height, 20, 20));
 
             // Título centrado
             Label lblTitulo = new Label
@@ -42,54 +48,60 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
                 Text = titulo,
                 AutoSize = false,
                 TextAlign = ContentAlignment.MiddleCenter,
-                Font = new Font("Segoe UI", 16, FontStyle.Bold),
+                Font = new Font("Segoe UI", 18, FontStyle.Bold),  // Tamaño ajustado
                 ForeColor = Color.White,
                 Dock = DockStyle.Top,
-                Height = 50
+                Height = 60
             };
             Controls.Add(lblTitulo);
 
-            // Controles
-            int y = 60, spacing = 45;
-            cbProvincias = new ComboBox { Location = new Point(20, y), Width = 440, DropDownStyle = ComboBoxStyle.DropDownList };
-            Controls.Add(new Label { Text = "Provincia:", ForeColor = Color.White, Location = new Point(20, y - 20) });
+            int y = 80, spacing = 60;  // Espacio entre elementos
+            cbProvincias = new ComboBox { Location = new Point(20, y), Width = 540, DropDownStyle = ComboBoxStyle.DropDownList };
+            var lblProvincia = new Label { Text = "Provincia:", ForeColor = Color.White, Location = new Point(20, y - 30), Font = new Font("Segoe UI", 10, FontStyle.Regular) };  // Etiqueta ajustada
+            Controls.Add(lblProvincia);
             Controls.Add(cbProvincias);
+            lblProvincia.Width = cbProvincias.Width;  // Ajustamos el ancho de la etiqueta
             y += spacing;
 
+            y += 20;  // Espacio adicional
             txtNombre = AddLabeledTextBox("Nombre:", ref y);
+            y += 20;  // Espacio adicional
             txtUbicacion = AddLabeledTextBox("Ubicación:", ref y);
 
+            y += 20;  // Espacio adicional
             nudPrecio = AddLabeledNumericUpDown("Precio por noche:", precioPorNoche, ref y, 0, 1000000, 0.01M);
+            y += 20;  // Espacio adicional
             nudCapacidad = AddLabeledNumericUpDown("Capacidad personas:", capacidad, ref y, 1, 1000, 1);
+            y += 20;  // Espacio adicional
             nudHabitaciones = AddLabeledNumericUpDown("Habitaciones:", habitaciones, ref y, 1, 1000, 1);
 
+            y += 20;  // Espacio adicional
             txtDescripcion = new TextBox
             {
                 Location = new Point(20, y),
-                Size = new Size(440, 60),
+                Size = new Size(540, 80),  // Ajustamos el tamaño de la caja de texto
                 Multiline = true
             };
-            Controls.Add(new Label { Text = "Descripción:", ForeColor = Color.White, Location = new Point(20, y - 20) });
+            var lblDescripcion = new Label { Text = "Descripción:", ForeColor = Color.White, Location = new Point(20, y - 30), Font = new Font("Segoe UI", 10, FontStyle.Regular) };  // Etiqueta ajustada
+            Controls.Add(lblDescripcion);
             Controls.Add(txtDescripcion);
-            y += 70;
+            lblDescripcion.Width = txtDescripcion.Width;  // Ajustamos el ancho de la etiqueta
+            y += 100;
 
-            // Eliminar el ComboBox de estado, ya no es necesario
-            // cbEstado = new ComboBox { Location = new Point(20, y), Width = 440, DropDownStyle = ComboBoxStyle.DropDownList };
-            // cbEstado.Items.AddRange(new string[] { "Disponible", "Reservado" });
-            // Controls.Add(new Label { Text = "Estado:", ForeColor = Color.White, Location = new Point(20, y - 20) });
-            // Controls.Add(cbEstado);
-            // y += spacing;
+            btnAceptar = new Button { Text = "Aceptar", Location = new Point(100, y), Size = new Size(160, 40) };
+            btnCancelar = new Button { Text = "Cancelar", Location = new Point(280, y), Size = new Size(160, 40) };
 
-            btnAceptar = new Button { Text = "Aceptar", Location = new Point(100, y), Size = new Size(120, 35) };
-            btnCancelar = new Button { Text = "Cancelar", Location = new Point(260, y), Size = new Size(120, 35) };
+            EstilosUI.AplicarEstiloBoton(btnAceptar);
+            EstilosUI.AplicarEstiloBoton(btnCancelar);
+
             Controls.Add(btnAceptar);
             Controls.Add(btnCancelar);
 
-            // Eventos
+            // Eventos de botones
             btnAceptar.Click += BtnAceptar_Click;
             btnCancelar.Click += (_, __) => this.DialogResult = DialogResult.Cancel;
 
-            // Carga provincias de DB
+            // Carga de provincias
             LoadProvincias();
 
             // Inicializa valores
@@ -101,10 +113,11 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
             nudHabitaciones.Value = habitaciones >= nudHabitaciones.Minimum && habitaciones <= nudHabitaciones.Maximum ? habitaciones : (decimal)nudHabitaciones.Minimum;
             txtDescripcion.Text = descripcion;
 
-            // Estado se asigna como "Disponible" por defecto
-            Estado = "Disponible";  // Valor fijo de estado
+            // Estado por defecto
+            Estado = "Disponible";
         }
 
+        // Método para cargar las provincias desde la base de datos
         private void LoadProvincias()
         {
             using var conn = new Conexion().ObtenerConexion();
@@ -119,6 +132,7 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
             cbProvincias.ValueMember = "id_provincia";
         }
 
+        // Método para seleccionar la provincia por id
         private void SelectProvinciaById(int provinciaId)
         {
             if (provinciaId == 0) return;
@@ -133,34 +147,42 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
             }
         }
 
+        // Método para agregar un TextBox con su etiqueta
         private TextBox AddLabeledTextBox(string label, ref int y)
         {
-            Controls.Add(new Label { Text = label, ForeColor = Color.White, Location = new Point(20, y - 20) });
-            var txt = new TextBox { Location = new Point(20, y), Width = 440 };
+            var lbl = new Label { Text = label, ForeColor = Color.White, Location = new Point(20, y - 30), Font = new Font("Segoe UI", 10, FontStyle.Regular) };  // Etiqueta ajustada
+            var txt = new TextBox { Location = new Point(20, y), Width = 540, Height = 35 };  // Ajustamos la altura del TextBox
+            Controls.Add(lbl);
             Controls.Add(txt);
-            y += 45;
+            lbl.Width = txt.Width;  // Ajustamos el ancho de la etiqueta
+            y += 80;  // Separación adicional
             return txt;
         }
 
+        // Método para agregar un NumericUpDown con su etiqueta
         private NumericUpDown AddLabeledNumericUpDown(string label, decimal defaultVal, ref int y,
             decimal min = 0, decimal max = 1000000, decimal step = 0.5M)
         {
-            Controls.Add(new Label { Text = label, ForeColor = Color.White, Location = new Point(20, y - 20) });
+            var lbl = new Label { Text = label, ForeColor = Color.White, Location = new Point(20, y - 30), Font = new Font("Segoe UI", 10, FontStyle.Regular) };  // Etiqueta ajustada
             var nud = new NumericUpDown
             {
                 Location = new Point(20, y),
-                Width = 440,
+                Width = 540,
+                Height = 35,
                 DecimalPlaces = step < 1 ? 2 : 0,
                 Minimum = min,
                 Maximum = max,
                 Value = defaultVal >= min && defaultVal <= max ? defaultVal : min,
                 Increment = step
             };
+            Controls.Add(lbl);
             Controls.Add(nud);
-            y += 45;
+            lbl.Width = nud.Width;  // Ajustamos el ancho de la etiqueta
+            y += 80;  // Separación adicional
             return nud;
         }
 
+        // Evento de clic en "Aceptar"
         private void BtnAceptar_Click(object sender, EventArgs e)
         {
             if (cbProvincias.SelectedIndex < 0
@@ -179,8 +201,7 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
             Habitaciones = (int)nudHabitaciones.Value;
             Descripcion = txtDescripcion.Text.Trim();
 
-            // Estado se establece como "Disponible" por defecto
-            Estado = "Disponible";
+            Estado = "Disponible";  // Valor fijo de estado
 
             DialogResult = DialogResult.OK;
         }

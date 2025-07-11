@@ -60,7 +60,7 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
             dgvHospedajes = new DataGridView
             {
                 Location = new Point(20, 70),
-                Size = new Size(ClientSize.Width - 40, ClientSize.Height - 170),
+                Size = new Size(ClientSize.Width - 40, ClientSize.Height - 220),
                 ReadOnly = true,
                 AllowUserToAddRows = false,
                 SelectionMode = DataGridViewSelectionMode.FullRowSelect,
@@ -78,35 +78,39 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
                 DefaultCellStyle = new DataGridViewCellStyle
                 {
                     Font = new Font("Segoe UI", 10),
-                    ForeColor = Color.White,
-                    BackColor = Color.FromArgb(50, 50, 60),
-                    SelectionBackColor = Color.FromArgb(100, 100, 120)
+                    ForeColor = Color.Black,
+                    BackColor = Color.White,
+                    
                 },
                 RowHeadersVisible = false,
                 Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right
             };
+            EstilosUI.AplicarEstiloDataGridView(dgvHospedajes);
             Controls.Add(dgvHospedajes);
 
+            // Alineación de botones al centro en la parte inferior
             int btnHeight = 45, spacing = 15;
             int totalBtn = 5;
             int btnWidth = (ClientSize.Width - 40 - spacing * (totalBtn - 1)) / totalBtn;
             int baseY = ClientSize.Height - btnHeight - 20;
 
-            btnAgregar = new Button { Text = "Agregar", Size = new Size(btnWidth, btnHeight), Location = new Point(20 + 0 * (btnWidth + spacing), baseY) };
-            btnEditar = new Button { Text = "Editar", Size = new Size(btnWidth, btnHeight), Location = new Point(20 + 1 * (btnWidth + spacing), baseY) };
-            btnEliminar = new Button { Text = "Eliminar", Size = new Size(btnWidth, btnHeight), Location = new Point(20 + 2 * (btnWidth + spacing), baseY) };
-            btnActualizar = new Button { Text = "Actualizar", Size = new Size(btnWidth, btnHeight), Location = new Point(20 + 3 * (btnWidth + spacing), baseY) };
-            btnCerrar = new Button { Text = "Cerrar", Size = new Size(btnWidth, btnHeight), Location = new Point(20 + 4 * (btnWidth + spacing), baseY) };
+            // Calcular la posición horizontal para centrar los botones
+            int totalBtnWidth = btnWidth * totalBtn + spacing * (totalBtn - 1);
+            int offsetX = (ClientSize.Width - totalBtnWidth) / 2;
+
+            btnAgregar = new Button { Text = "Agregar", Size = new Size(btnWidth, btnHeight), Location = new Point(offsetX + 0 * (btnWidth + spacing), baseY) };
+            btnEditar = new Button { Text = "Editar", Size = new Size(btnWidth, btnHeight), Location = new Point(offsetX + 1 * (btnWidth + spacing), baseY) };
+            btnEliminar = new Button { Text = "Eliminar", Size = new Size(btnWidth, btnHeight), Location = new Point(offsetX + 2 * (btnWidth + spacing), baseY) };
+            btnActualizar = new Button { Text = "Actualizar", Size = new Size(btnWidth, btnHeight), Location = new Point(offsetX + 3 * (btnWidth + spacing), baseY) };
+            btnCerrar = new Button { Text = "Cerrar", Size = new Size(btnWidth, btnHeight), Location = new Point(offsetX + 4 * (btnWidth + spacing), baseY) };
 
             foreach (var b in new[] { btnAgregar, btnEditar, btnEliminar, btnActualizar, btnCerrar })
             {
-                b.BackColor = Color.FromArgb(70, 130, 180);
-                b.FlatStyle = FlatStyle.Flat;
-                b.FlatAppearance.BorderSize = 0;
-                b.ForeColor = Color.White;
-                b.Font = new Font("Segoe UI", 10, FontStyle.Bold);
+                EstilosUI.AplicarEstiloBoton(b);
                 Controls.Add(b);
+                b.BringToFront();
             }
+
 
             btnAgregar.Click += BtnAgregar_Click;
             btnEditar.Click += BtnEditar_Click;
@@ -117,6 +121,7 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
             ResumeLayout(false);
             PerformLayout();
         }
+
 
         private void CargarDatos()
         {
