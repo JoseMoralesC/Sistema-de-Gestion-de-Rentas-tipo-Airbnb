@@ -144,7 +144,7 @@ namespace Sistema_de_Gestion_de_Rentas.ProvinciaForms
 
                 // Establecer Dock para que la tarjeta llene la celda
                 card.Dock = DockStyle.Fill;
-                provinciasTable.Controls.Add(card, i % provinciasTable.ColumnCount, i / provinciasTable.ColumnCount);
+                provinciasTable.Controls.Add(card, i % provinciasTable.ColumnCount, i / provinciasTable.RowCount);
             }
         }
 
@@ -169,15 +169,12 @@ namespace Sistema_de_Gestion_de_Rentas.ProvinciaForms
 
         private void AbrirFormularioReservas(Hospedaje hospedaje)
         {
-            // Usamos el CustomMessageBoxForm para mostrar la opción de confirmación
-            DialogResult result = CustomMessageBoxForm.MostrarOpciones($"¿Desea hospedarse en: {hospedaje.Nombre}?", "Sí", "No");
+            // Usamos el CustomMessageBoxForm para mostrar la opción de confirmación con solo un OK
+            CustomMessageBoxForm.Mostrar(this, $"¿Desea hospedarse en: {hospedaje.Nombre}?");
 
-            if (result == DialogResult.Yes)
-            {
-                // Crear y mostrar el formulario de reservación con toda la información del hospedaje
-                ReservacionForm reservacionForm = new ReservacionForm(hospedaje.Nombre, hospedaje.PrecioPorNoche);
-                reservacionForm.ShowDialog();  // Usamos ShowDialog() para hacerlo modal
-            }
+            // Procedemos con la reservación solo si el usuario hizo clic en "OK"
+            ReservacionForm reservacionForm = new ReservacionForm(hospedaje.Nombre, hospedaje.PrecioPorNoche);
+            reservacionForm.ShowDialog();  // Usamos ShowDialog() para hacerlo modal
         }
 
         private void BtnRegresar_Click(object sender, EventArgs e)

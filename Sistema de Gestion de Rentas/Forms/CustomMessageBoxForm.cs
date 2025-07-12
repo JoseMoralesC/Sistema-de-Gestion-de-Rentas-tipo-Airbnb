@@ -95,6 +95,20 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
             // *** Estas líneas aseguran que el formulario esté siempre al frente ***
             this.TopMost = true;
             this.Activate();
+
+            // Permitir capturar teclas en el formulario
+            this.KeyPreview = true;
+            this.KeyDown += CustomMessageBoxForm_KeyDown;
+        }
+
+        // Manejo del evento KeyDown para detectar cuando se presiona la tecla Enter
+        private void CustomMessageBoxForm_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                // Simula el clic en el primer botón (Aceptar/Sí)
+                btnSi.PerformClick();
+            }
         }
 
         protected override void OnShown(EventArgs e)

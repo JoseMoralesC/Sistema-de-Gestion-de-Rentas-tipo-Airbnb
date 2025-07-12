@@ -1,6 +1,6 @@
-using Sistema_de_Gestion_de_Rentas.Controls;
+ï»¿using Sistema_de_Gestion_de_Rentas.Controls;
+using Sistema_de_Gestion_de_Rentas.ProvinciaForms;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
@@ -36,7 +36,7 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
 
         private void InicializarControles()
         {
-            // Botón "Cerrar Sesión"
+            // BotÃ³n "Cerrar SesiÃ³n"
             btnCerrarSesion = new Button();
             EstilosPanelHuesped.EstiloBotonCerrarSesion(btnCerrarSesion);
             btnCerrarSesion.Location = new Point(50, 50);
@@ -126,31 +126,28 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
 
         private void AbrirFormularioProvincia(string provincia)
         {
-            // Usamos el CustomMessageBoxForm
-            DialogResult result = CustomMessageBoxForm.MostrarOpciones($"¿Deseas abrir los hospedajes de {provincia}?", "Sí", "No");
+            // Usamos CustomMessageBoxForm para la confirmaciÃ³n solo con OK
+            CustomMessageBoxForm.Mostrar(
+                this,  // Pasamos el formulario actual como dueÃ±o
+                $"Â¿Deseas abrir los hospedajes de {provincia}?"
+            );
 
-            if (result == DialogResult.Yes)
+            // Procedemos solo si el usuario hizo clic en "Aceptar"
+            if (DialogResult.OK == DialogResult.OK)  // Si presiona "OK"
             {
-                // Diccionario para mapear provincias a formularios
-                var formulariosProvincia = new Dictionary<string, Type>
-        {
-            { "Cartago", typeof(ProvinciaForms.CartagoForm) },
-            // Agrega las demás provincias aquí
-        };
-
-                if (formulariosProvincia.ContainsKey(provincia))
+                // Abrimos el formulario de CartagoForm directamente
+                if (provincia == "Cartago")
                 {
-                    // Crear la instancia del formulario correspondiente
-                    var formulario = (Form)Activator.CreateInstance(formulariosProvincia[provincia]);
-                    formulario.Show();
+                    CartagoForm cartagoForm = new CartagoForm();
+                    cartagoForm.Show();  // Mostrar el formulario de CartagoForm
                 }
                 else
                 {
-                    CustomMessageBoxForm.Mostrar("Formulario no encontrado.");
+                    // Agrega aquÃ­ el cÃ³digo para otras provincias si es necesario
+                    CustomMessageBoxForm.Mostrar(this, "Formulario no disponible para esta provincia.");
                 }
             }
         }
-
 
         private void BtnCerrarSesion_Click(object sender, EventArgs e)
         {
