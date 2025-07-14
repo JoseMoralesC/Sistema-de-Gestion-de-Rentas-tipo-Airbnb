@@ -9,6 +9,9 @@ namespace Sistema_de_Gestion_de_Rentas.Controls
         private PictureBox pictureBox;
         private Label lblTitulo;
 
+        // Nueva propiedad para almacenar el ID del hospedaje
+        public int IdHospedaje { get; private set; }
+
         public string Titulo
         {
             get => lblTitulo.Text;
@@ -57,6 +60,12 @@ namespace Sistema_de_Gestion_de_Rentas.Controls
 
             Cursor = Cursors.Hand;
             this.Click += (s, e) => CardClick?.Invoke(this, EventArgs.Empty);
+        }
+
+        // Nuevo método para establecer el ID del hospedaje
+        public void EstablecerIdHospedaje(int id)
+        {
+            IdHospedaje = id;
         }
     }
 }

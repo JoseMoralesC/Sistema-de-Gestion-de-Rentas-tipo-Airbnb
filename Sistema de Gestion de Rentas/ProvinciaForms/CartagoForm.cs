@@ -110,40 +110,53 @@ namespace Sistema_de_Gestion_de_Rentas.ProvinciaForms
 
         private void CargarHospedajes()
         {
-            // Obtener los hospedajes de Cartago desde la lógica
-            var hospedajes = HospedajeLogic.ObtenerHospedajePorProvincia("Cartago");
+            // Definir los IDs de los hospedajes que se deben cargar (fijos, uno para cada contenedor)
+            var idsHospedajes = new List<int> { 1, 2, 3, 4 };  // Ejemplo de IDs fijos para los 4 contenedores
+
+            // Obtener los hospedajes desde la lógica, solo aquellos con los IDs especificados
+            var hospedajes = HospedajeLogic.ObtenerHospedajesParaContenedores("Cartago", idsHospedajes);
 
             provinciasTable.Controls.Clear();  // Limpiar la tabla de la UI
 
-            // Llenar el grid 2x2 con los hospedajes
+            // Obtener el número total de celdas de la tabla
             int totalCeldas = provinciasTable.RowCount * provinciasTable.ColumnCount;
+
             for (int i = 0; i < totalCeldas; i++)
             {
                 ProvinciaCard card;
 
                 if (i < hospedajes.Count)
                 {
-                    var hospedaje = hospedajes.Values.ElementAt(i);
+                    var hospedaje = hospedajes[i];
                     card = new ProvinciaCard
                     {
-                        Titulo = hospedaje.Nombre,
-                        Imagen = CargarImagenHospedaje(hospedaje.Nombre.ToLower().Replace(" ", "")) // Cambié el método para reflejar hospedaje
+                        // El título sigue sin mostrar el índice, solo el nombre
+                        Titulo = hospedaje.Nombre,  // Solo el nombre del hospedaje
+                        Imagen = CargarImagenHospedaje(hospedaje.Nombre.ToLower().Replace(" ", ""))  // Cambiar esto si el nombre no coincide con la imagen
                     };
 
-                    // Asignar el evento de clic para abrir el formulario de reservación cuando se selecciona el hospedaje
+                    // Asignar el ID del hospedaje a la tarjeta
+                    card.EstablecerIdHospedaje(hospedaje.Id);  // Este ID es lo que se usará para la búsqueda
+
+                    // Verificar si el nombre del hospedaje es correcto en consola
+                    Console.WriteLine($"Contenedor {i + 1} - ID: {hospedaje.Id}, Nombre: {hospedaje.Nombre}");
+
+                    // Asignar evento de clic para abrir formulario de reservación
                     card.CardClick += (s, e) => AbrirFormularioReservas(hospedaje);
                 }
                 else
                 {
                     card = new ProvinciaCard
                     {
-                        Titulo = "",
+                        Titulo = "No disponible",  // Esto se muestra si no hay hospedajes
                         Imagen = null
                     };
                 }
 
-                // Establecer Dock para que la tarjeta llene la celda
+                // Ajustar el tamaño del contenedor
                 card.Dock = DockStyle.Fill;
+
+                // Agregar la tarjeta al contenedor correspondiente en la tabla
                 provinciasTable.Controls.Add(card, i % provinciasTable.ColumnCount, i / provinciasTable.RowCount);
             }
         }
@@ -163,9 +176,20 @@ namespace Sistema_de_Gestion_de_Rentas.ProvinciaForms
             }
             else
             {
-                return null;  // Si no existe, retornamos null o podríamos usar una imagen por defecto
+                // Cargar la imagen "no disponible" si no se encuentra la imagen específica del hospedaje
+                string imagenNoDisponible = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources", "NoDisponible.jpg");
+                if (File.Exists(imagenNoDisponible))
+                {
+                    return Image.FromFile(imagenNoDisponible);
+                }
+                else
+                {
+                    Console.WriteLine("Imagen de 'No Disponible' no encontrada");
+                    return null;  // Si no hay imagen de "No disponible", podemos retornar null o una imagen predeterminada
+                }
             }
         }
+
 
         private void AbrirFormularioReservas(Hospedaje hospedaje)
         {
@@ -173,9 +197,11 @@ namespace Sistema_de_Gestion_de_Rentas.ProvinciaForms
             CustomMessageBoxForm.Mostrar(this, $"¿Desea hospedarse en: {hospedaje.Nombre}?");
 
             // Procedemos con la reservación solo si el usuario hizo clic en "OK"
-            ReservacionForm reservacionForm = new ReservacionForm(hospedaje.Nombre, hospedaje.PrecioPorNoche);
+            // Se pasa el ID del hospedaje al constructor de ReservacionForm
+            ReservacionForm reservacionForm = new ReservacionForm(hospedaje.Id);
             reservacionForm.ShowDialog();  // Usamos ShowDialog() para hacerlo modal
         }
+
 
         private void BtnRegresar_Click(object sender, EventArgs e)
         {

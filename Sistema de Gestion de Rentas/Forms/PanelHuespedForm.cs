@@ -64,6 +64,25 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
             provinciasTable = new TableLayoutPanel();
             EstilosPanelHuesped.EstiloTableLayoutPanelProvincias(provinciasTable);
             provinciasTable.Location = new Point(50, lblMensaje.Bottom + 20);
+            provinciasTable.Size = new Size(this.ClientSize.Width - 100, 520); // Aseguramos un tamaño fijo
+            provinciasTable.ColumnCount = 4;  // 4 columnas
+            provinciasTable.RowCount = 2;  // 2 filas
+
+            // Asegurar que cada columna ocupe un 25% del ancho
+            for (int i = 0; i < 4; i++)
+            {
+                provinciasTable.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25));
+            }
+
+            // Asegurar que cada fila ocupe un 50% de la altura disponible
+            for (int i = 0; i < 2; i++)
+            {
+                provinciasTable.RowStyles.Add(new RowStyle(SizeType.Percent, 50));
+            }
+
+            // No mostrar bordes en las celdas
+            provinciasTable.CellBorderStyle = TableLayoutPanelCellBorderStyle.None;
+
             Controls.Add(provinciasTable);
 
             // Ajustar controles al redimensionar ventana
@@ -77,6 +96,7 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
 
         private void CargarProvincias()
         {
+            // Definir las provincias que deben mostrarse en el PanelHuesped
             string[] nombres = {
                 "Alajuela", "Cartago", "San Jose", "Heredia",
                 "Puntarenas", "Guanacaste", "Limon", "Costa Rica"
@@ -98,6 +118,8 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
                         Titulo = nombre,
                         Imagen = CargarImagenProvincia(nombre.ToLower().Replace(" ", ""))
                     };
+
+                    // Cambiar el evento para abrir el formulario de la provincia
                     card.CardClick += (s, e) => AbrirFormularioProvincia(nombre);
                 }
                 else
@@ -109,10 +131,11 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
                     };
                 }
 
-                // Establecer Dock para que la tarjeta llene la celda
-                card.Dock = DockStyle.Fill;
+                // Ajustamos la tarjeta para que ocupe el espacio de la celda, pero sin utilizar DockStyle.Fill
+                card.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
 
-                provinciasTable.Controls.Add(card, i % provinciasTable.ColumnCount, i / provinciasTable.ColumnCount);
+                // Añadir la tarjeta a la celda correspondiente
+                provinciasTable.Controls.Add(card, i % 4, i / 4); // Añadimos la tarjeta de forma 4x2
             }
         }
 
@@ -129,22 +152,30 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
             // Usamos CustomMessageBoxForm para la confirmación solo con OK
             CustomMessageBoxForm.Mostrar(
                 this,  // Pasamos el formulario actual como dueño
-                $"¿Deseas abrir los hospedajes de {provincia}?"
-            );
+                $"¿Deseas abrir los hospedajes de {provincia}?");
 
             // Procedemos solo si el usuario hizo clic en "Aceptar"
             if (DialogResult.OK == DialogResult.OK)  // Si presiona "OK"
             {
-                // Abrimos el formulario de CartagoForm directamente
-                if (provincia == "Cartago")
+                // Abrir el formulario de la provincia correspondiente
+                switch (provincia)
                 {
-                    CartagoForm cartagoForm = new CartagoForm();
-                    cartagoForm.Show();  // Mostrar el formulario de CartagoForm
-                }
-                else
-                {
-                    // Agrega aquí el código para otras provincias si es necesario
-                    CustomMessageBoxForm.Mostrar(this, "Formulario no disponible para esta provincia.");
+                    case "Cartago":
+                        CartagoForm cartagoForm = new CartagoForm();
+                        cartagoForm.Show();
+                        break;
+
+                    case "San Jose":
+                        //Si tienes otro formulario para San José, puedes descomentar esto
+                        //SanJoseForm sanJoseForm = new SanJoseForm();
+                        //sanJoseForm.Show();
+                        break;
+
+                    // Puedes agregar más casos aquí si tienes formularios de otras provincias
+
+                    default:
+                        CustomMessageBoxForm.Mostrar(this, $"Formulario no disponible para {provincia}.");
+                        break;
                 }
             }
         }
