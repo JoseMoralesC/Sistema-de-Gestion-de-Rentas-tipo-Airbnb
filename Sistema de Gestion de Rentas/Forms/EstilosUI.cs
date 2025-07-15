@@ -10,6 +10,12 @@ public static class EstilosUI
         int nLeftRect, int nTopRect, int nRightRect, int nBottomRect,
         int nWidthEllipse, int nHeightEllipse);
 
+    // Función reutilizable para aplicar bordes redondeados
+    private static void AplicarBordesRedondeados(Control control, int radioX, int radioY)
+    {
+        control.Region = Region.FromHrgn(CreateRoundRectRgn(0, 0, control.Width, control.Height, radioX, radioY));
+    }
+
     public static void AplicarEstiloBoton(Button boton)
     {
         boton.FlatStyle = FlatStyle.Flat;
@@ -17,12 +23,12 @@ public static class EstilosUI
         boton.BackColor = Color.FromArgb(30, 144, 255);
         boton.ForeColor = Color.White;
         boton.Font = new Font("Segoe UI", 12, FontStyle.Bold);
-        boton.Region = Region.FromHrgn(CreateRoundRectRgn(0, 0, boton.Width, boton.Height, 15, 15));
+        AplicarBordesRedondeados(boton, 15, 15);
         boton.MouseEnter += (s, e) => boton.BackColor = Color.FromArgb(65, 105, 225);
         boton.MouseLeave += (s, e) => boton.BackColor = Color.FromArgb(30, 144, 255);
     }
 
-    public static void AplicarEstiloTextBox(TextBox txt)
+    public static void AplicarEstiloTextBox(TextBox txt)  // Corregido el nombre del método
     {
         txt.Font = new Font("Segoe UI", 11);
         txt.BackColor = Color.White;
@@ -31,7 +37,7 @@ public static class EstilosUI
         txt.Multiline = false;
         txt.Height = 35;
         txt.TextAlign = HorizontalAlignment.Left;
-        txt.Region = Region.FromHrgn(CreateRoundRectRgn(0, 0, txt.Width, txt.Height, 10, 10));
+        AplicarBordesRedondeados(txt, 10, 10);
         txt.Padding = new Padding(8, 5, 8, 5);
     }
 
@@ -78,7 +84,8 @@ public static class EstilosUI
         nud.BorderStyle = BorderStyle.FixedSingle;
         nud.TextAlign = HorizontalAlignment.Left;
         nud.Size = new Size(nud.Width, 35);
-        // No se puede redondear bordes fácilmente, pero puedes ajustar otros estilos
+
+        // No es posible redondear fácilmente un NumericUpDown, por lo que no aplicamos bordes redondeados
     }
 
     // Nuevo método para ComboBox
@@ -89,7 +96,17 @@ public static class EstilosUI
         cb.ForeColor = Color.Black;
         cb.FlatStyle = FlatStyle.Flat;
         cb.DropDownStyle = ComboBoxStyle.DropDownList;
-        cb.Region = Region.FromHrgn(CreateRoundRectRgn(0, 0, cb.Width, cb.Height, 10, 10));
+        AplicarBordesRedondeados(cb, 10, 10);
         cb.Padding = new Padding(8, 5, 8, 5);
+    }
+
+    // Nuevo método para DateTimePicker
+    public static void AplicarEstiloDateTimePicker(DateTimePicker dtp)
+    {
+        dtp.Font = new Font("Segoe UI", 11);
+        dtp.BackColor = Color.White;
+        dtp.ForeColor = Color.Black;
+        dtp.Format = DateTimePickerFormat.Short;
+        AplicarBordesRedondeados(dtp, 10, 10);
     }
 }

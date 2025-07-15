@@ -28,8 +28,10 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
             BackColor = Color.FromArgb(45, 45, 48);
             ForeColor = Color.White;
 
+            // Bordes redondeados para el formulario
             Region = Region.FromHrgn(CreateRoundRectRgn(0, 0, Width, Height, 20, 20));
 
+            // Label para el mensaje
             lblMensaje = new Label
             {
                 Text = mensaje,
@@ -41,28 +43,43 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
             };
             Controls.Add(lblMensaje);
 
-            btnSi = new Button
+            // Botones: Si y No
+            btnSi = CrearBoton("Sí", DialogResult.Yes);
+            btnNo = CrearBoton("No", DialogResult.No);
+
+            // Configuración del layout de los botones
+            OrganizarBotones();
+
+            // Establecer el botón Aceptar (Enter) y Cancelar (Esc)
+            AcceptButton = btnSi;
+            CancelButton = btnNo;
+
+            // Aseguramos que el formulario esté al frente
+            this.TopMost = true;
+            this.Activate();
+            this.KeyPreview = true;
+            this.KeyDown += CustomMessageBoxForm_KeyDown;
+        }
+
+        // Crear botón con estilo
+        private Button CrearBoton(string texto, DialogResult resultado)
+        {
+            var boton = new Button
             {
+                Text = texto,
                 Size = new Size(160, 40),
                 BackColor = Color.FromArgb(70, 130, 180),
                 FlatStyle = FlatStyle.Flat,
                 ForeColor = Color.White,
-                DialogResult = DialogResult.Yes
+                DialogResult = resultado,
             };
-            btnSi.FlatAppearance.BorderSize = 0;
-            Controls.Add(btnSi);
+            boton.FlatAppearance.BorderSize = 0;
+            return boton;
+        }
 
-            btnNo = new Button
-            {
-                Size = new Size(160, 40),
-                BackColor = Color.FromArgb(70, 130, 180),
-                FlatStyle = FlatStyle.Flat,
-                ForeColor = Color.White,
-                DialogResult = DialogResult.No
-            };
-            btnNo.FlatAppearance.BorderSize = 0;
-            Controls.Add(btnNo);
-
+        // Organizar botones en el formulario
+        private void OrganizarBotones()
+        {
             int padding = 10;
             int totalWidth = btnSi.Width * 2 + padding;
             int startX = (ClientSize.Width - totalWidth) / 2;
@@ -70,43 +87,28 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
             btnSi.Location = new Point(startX, ClientSize.Height - 70);
             btnNo.Location = new Point(btnSi.Right + padding, ClientSize.Height - 70);
 
-            if (_showTwoButtons)
+            // Si no se deben mostrar los botones de opción
+            if (!_showTwoButtons)
             {
-                btnSi.Text = _opcion1;
-                btnSi.DialogResult = DialogResult.Yes;
-
-                btnNo.Text = _opcion2;
-                btnNo.DialogResult = DialogResult.No;
-
-                btnSi.Visible = true;
-                btnNo.Visible = true;
+                btnNo.Visible = false;
+                btnSi.Text = "OK";
+                btnSi.DialogResult = DialogResult.OK;
             }
             else
             {
-                btnSi.Text = "OK";
-                btnSi.DialogResult = DialogResult.OK;
-                btnSi.Visible = true;
-                btnNo.Visible = false;
+                btnSi.Text = _opcion1;
+                btnNo.Text = _opcion2;
             }
 
-            AcceptButton = btnSi;
-            CancelButton = btnNo;
-
-            // *** Estas líneas aseguran que el formulario esté siempre al frente ***
-            this.TopMost = true;
-            this.Activate();
-
-            // Permitir capturar teclas en el formulario
-            this.KeyPreview = true;
-            this.KeyDown += CustomMessageBoxForm_KeyDown;
+            Controls.Add(btnSi);
+            Controls.Add(btnNo);
         }
 
-        // Manejo del evento KeyDown para detectar cuando se presiona la tecla Enter
+        // Manejo de teclas presionadas (Enter)
         private void CustomMessageBoxForm_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
             {
-                // Simula el clic en el primer botón (Aceptar/Sí)
                 btnSi.PerformClick();
             }
         }
@@ -119,7 +121,8 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
             this.Activate();
         }
 
-        // Mostrar mensaje simple (sin dueño)
+        // Métodos estáticos para mostrar el cuadro de mensaje
+
         public static DialogResult Mostrar(string mensaje)
         {
             using var box = new CustomMessageBoxForm(mensaje);
@@ -127,7 +130,6 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
             return box.ShowDialog();
         }
 
-        // Mostrar mensaje simple (con dueño)
         public static DialogResult Mostrar(IWin32Window owner, string mensaje)
         {
             using var box = new CustomMessageBoxForm(mensaje);
@@ -135,7 +137,6 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
             return box.ShowDialog(owner);
         }
 
-        // Mostrar mensaje con opciones Sí / No (sin dueño)
         public static DialogResult MostrarOpciones(string mensaje, string opcion1 = "Sí", string opcion2 = "No")
         {
             using var box = new CustomMessageBoxForm(mensaje);
@@ -145,7 +146,6 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
             return box.ShowDialog();
         }
 
-        // Mostrar mensaje con opciones Sí / No (con dueño)
         public static DialogResult MostrarOpciones(IWin32Window owner, string mensaje, string opcion1 = "Sí", string opcion2 = "No")
         {
             using var box = new CustomMessageBoxForm(mensaje);
