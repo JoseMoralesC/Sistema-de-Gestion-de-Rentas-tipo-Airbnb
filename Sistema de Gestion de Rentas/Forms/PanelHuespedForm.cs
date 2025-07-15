@@ -5,6 +5,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using System.Collections.Generic;
+using System.Drawing;
 
 namespace Sistema_de_Gestion_de_Rentas.Forms
 {
@@ -16,6 +17,9 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
             int nWidthEllipse, int nHeightEllipse);
 
         private Button btnCerrarSesion;
+        private Button btnPerfil;
+        private Button btnNosotros;
+
         private TableLayoutPanel provinciasTable;
         private Label lblBienvenida;
         private Label lblMensaje;
@@ -37,67 +41,79 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
 
         private void InicializarControles()
         {
-            // Botón "Cerrar Sesión"
+            // Botón "Cerrar Sesión" (izquierda)
             btnCerrarSesion = new Button();
             EstilosPanelHuesped.EstiloBotonCerrarSesion(btnCerrarSesion);
-            btnCerrarSesion.Location = new Point(50, 50);
+            btnCerrarSesion.Text = "Cerrar Sesión";
             btnCerrarSesion.Click += BtnCerrarSesion_Click;
             Controls.Add(btnCerrarSesion);
+
+            // Botón "Perfil" (centro)
+            btnPerfil = new Button();
+            EstilosPanelHuesped.EstiloBotonCerrarSesion(btnPerfil);
+            btnPerfil.Text = "Perfil";
+            btnPerfil.Click += BtnPerfil_Click;
+            Controls.Add(btnPerfil);
+
+            // Botón "Nosotros" (derecha)
+            btnNosotros = new Button();
+            EstilosPanelHuesped.EstiloBotonCerrarSesion(btnNosotros);
+            btnNosotros.Text = "Nosotros";
+            btnNosotros.Click += BtnNosotros_Click;
+            Controls.Add(btnNosotros);
 
             // Etiqueta "Bienvenido"
             lblBienvenida = new Label();
             EstilosPanelHuesped.EstiloLabelBienvenida(lblBienvenida);
             Controls.Add(lblBienvenida);
 
-            // Banner (Imagen)
+            // Banner
             banner = new PictureBox();
             EstilosPanelHuesped.EstiloBanner(banner, Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources", "banner.jpg"), 200, this.ClientSize.Width - 100);
             banner.Location = new Point(50, 180);
             Controls.Add(banner);
 
-            // Etiqueta de mensaje
+            // Mensaje
             lblMensaje = new Label();
             EstilosPanelHuesped.EstiloLabelMensaje(lblMensaje);
             lblMensaje.Location = new Point(50, banner.Bottom + 10);
             Controls.Add(lblMensaje);
 
-            // TableLayoutPanel para Provincias
+            // Provincias
             provinciasTable = new TableLayoutPanel();
             EstilosPanelHuesped.EstiloTableLayoutPanelProvincias(provinciasTable);
             provinciasTable.Location = new Point(50, lblMensaje.Bottom + 20);
-            provinciasTable.Size = new Size(this.ClientSize.Width - 100, 520); // Aseguramos un tamaño fijo
-            provinciasTable.ColumnCount = 4;  // 4 columnas
-            provinciasTable.RowCount = 2;  // 2 filas
+            provinciasTable.Size = new Size(this.ClientSize.Width - 100, 520);
+            provinciasTable.ColumnCount = 4;
+            provinciasTable.RowCount = 2;
 
-            // Asegurar que cada columna ocupe un 25% del ancho
             for (int i = 0; i < 4; i++)
-            {
                 provinciasTable.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25));
-            }
-
-            // Asegurar que cada fila ocupe un 50% de la altura disponible
             for (int i = 0; i < 2; i++)
-            {
                 provinciasTable.RowStyles.Add(new RowStyle(SizeType.Percent, 50));
-            }
 
-            // No mostrar bordes en las celdas
             provinciasTable.CellBorderStyle = TableLayoutPanelCellBorderStyle.None;
-
             Controls.Add(provinciasTable);
 
-            // Ajustar controles al redimensionar ventana
+            // Posiciones iniciales de los botones
+            btnCerrarSesion.Location = new Point(50, 50);
+            btnPerfil.Location = new Point((this.ClientSize.Width / 2) - (btnPerfil.Width / 2), 50);
+            btnNosotros.Location = new Point(this.ClientSize.Width - btnNosotros.Width - 50, 50);
+
+            // Ajustar todo al redimensionar
             this.Resize += (s, e) =>
             {
                 banner.Width = this.ClientSize.Width - 100;
                 lblMensaje.Size = new Size(this.ClientSize.Width - 100, 30);
                 provinciasTable.Size = new Size(this.ClientSize.Width - 100, 520);
+
+                btnPerfil.Location = new Point((this.ClientSize.Width / 2) - (btnPerfil.Width / 2), 50);
+                btnNosotros.Location = new Point(this.ClientSize.Width - btnNosotros.Width - 50, 50);
             };
         }
 
         private void CargarProvincias()
         {
-            // Definir las provincias que deben mostrarse en el PanelHuesped
             var provincias = new Dictionary<string, int>
             {
                 { "Alajuela", 2 },
@@ -111,26 +127,20 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
 
             provinciasTable.Controls.Clear();
 
-            // Llenar el grid 4x2
             int totalCeldas = provinciasTable.RowCount * provinciasTable.ColumnCount;
-            int i = 0; // Indice para recorrer las provincias
+            int i = 0;
 
             foreach (var provincia in provincias)
             {
-                // Creamos el card para cada provincia
                 ProvinciaCard card = new ProvinciaCard
                 {
                     Titulo = provincia.Key,
                     Imagen = CargarImagenProvincia(provincia.Key.ToLower().Replace(" ", ""))
                 };
 
-                // Asignamos el id de provincia al evento CardClick
                 card.CardClick += (s, e) => AbrirFormularioProvincia(provincia.Key, provincia.Value);
-
-                // Ajustamos la tarjeta para que ocupe el espacio de la celda, pero sin utilizar DockStyle.Fill
                 card.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
 
-                // Añadir la tarjeta a la celda correspondiente
                 provinciasTable.Controls.Add(card, i % 4, i / 4);
                 i++;
             }
@@ -139,20 +149,14 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
         private Image CargarImagenProvincia(string nombreArchivo)
         {
             string ruta = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources", $"{nombreArchivo}.jpg");
-            if (File.Exists(ruta))
-                return Image.FromFile(ruta);
-            return null; // imagen por defecto o nula
+            return File.Exists(ruta) ? Image.FromFile(ruta) : null;
         }
 
         private void AbrirFormularioProvincia(string provincia, int provinciaId)
         {
-            // Usamos CustomMessageBoxForm para la confirmación solo con OK
             CustomMessageBoxForm.Mostrar(this, $"¿Deseas abrir los hospedajes de {provincia}?");
-
-            // Procedemos solo si el usuario hizo clic en "Aceptar"
-            if (DialogResult.OK == DialogResult.OK)  // Si presiona "OK"
+            if (DialogResult.OK == DialogResult.OK)
             {
-                // Abrir el formulario de la provincia correspondiente y pasar el provincia_id
                 switch (provincia)
                 {
                     case "Cartago":
@@ -161,12 +165,9 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
                         break;
 
                     case "San Jose":
-                        // Si tienes otro formulario para San José, puedes descomentar esto
                         // SanJoseForm sanJoseForm = new SanJoseForm(provinciaId);
                         // sanJoseForm.Show();
                         break;
-
-                    // Puedes agregar más casos aquí si tienes formularios de otras provincias
 
                     default:
                         CustomMessageBoxForm.Mostrar(this, $"Formulario no disponible para {provincia}.");
@@ -181,6 +182,17 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
             var inicioForm = new InicioForm();
             inicioForm.Show();
             Close();
+        }
+
+        private void BtnPerfil_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("Aquí iría el perfil del usuario (a implementar)");
+        }
+
+        private void BtnNosotros_Click(object sender, EventArgs e)
+        {
+            NosotrosForm nosotrosForm = new NosotrosForm();
+            nosotrosForm.Show();
         }
     }
 }
