@@ -165,8 +165,33 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
                         break;
 
                     case "San Jose":
-                        // SanJoseForm sanJoseForm = new SanJoseForm(provinciaId);
-                        // sanJoseForm.Show();
+                         SanJoseForm sanJoseForm = new SanJoseForm(provinciaId);
+                         sanJoseForm.Show();
+                        break;
+
+                    case "Alajuela":
+                        AlajuelaForm AlajuelaForm = new AlajuelaForm(provinciaId);
+                        AlajuelaForm.Show();
+                        break;
+
+                    case "Heredia":
+                        HerediaForm HerediaForm = new HerediaForm(provinciaId);
+                        HerediaForm.Show();
+                        break;
+
+                    case "Guanacaste":
+                        GuanacasteForm GuanacasteForm = new GuanacasteForm(provinciaId);
+                        GuanacasteForm.Show();
+                        break;
+
+                    case "Puntarenas":
+                        PuntarenasForm PuntarenasForm = new PuntarenasForm(provinciaId);
+                        PuntarenasForm.Show();
+                        break;
+
+                    case "Limon":
+                        LimonForm LimonForm = new LimonForm(provinciaId);
+                        LimonForm.Show();
                         break;
 
                     default:
