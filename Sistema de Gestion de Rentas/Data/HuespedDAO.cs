@@ -5,7 +5,6 @@ namespace Sistema_de_Gestion_de_Rentas.Data
 {
     public class HuespedDAO
     {
-        // Método para obtener las credenciales y el rol del usuario en una sola consulta
         public static string ObtenerRolPorUsuarioYContrasena(string usuario, string contrasena)
         {
             try
@@ -24,25 +23,66 @@ namespace Sistema_de_Gestion_de_Rentas.Data
                         cmd.Parameters.AddWithValue("@usuario", usuario);
                         cmd.Parameters.AddWithValue("@contrasena", contrasena);
 
-                        // Ejecutamos la consulta y obtenemos el rol
                         var result = cmd.ExecuteScalar();
-                        if (result != null)
-                        {
-                            return result.ToString(); // Retorna el rol si la consulta es exitosa
-                        }
+                        return result?.ToString();
                     }
                 }
             }
             catch (Exception ex)
             {
                 Console.Error.WriteLine($"Error al obtener rol por usuario y contraseña: {ex.Message}");
-                return null; // Retorna null si ocurre un error
+                return null;
             }
-
-            return null; // Si no se encuentra usuario o contrasena, retornamos null
         }
 
-        // Otros métodos...
+        public static Huesped ObtenerHuespedPorUsuarioYContrasena(string usuario, string contrasena)
+        {
+            try
+            {
+                Conexion conexion = new Conexion();
+                using (var conn = conexion.ObtenerConexion())
+                {
+                    string sql = @"
+                        SELECT * FROM Huespedes
+                        WHERE usuario = @usuario AND contrasena = @contrasena
+                        LIMIT 1;
+                    ";
+
+                    using (var cmd = new NpgsqlCommand(sql, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@usuario", usuario);
+                        cmd.Parameters.AddWithValue("@contrasena", contrasena);
+
+                        using (var reader = cmd.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                return new Huesped(
+                                    identificacion: reader.GetString(reader.GetOrdinal("identificacion")),
+                                    usuario: reader.GetString(reader.GetOrdinal("usuario")),
+                                    contrasena: reader.GetString(reader.GetOrdinal("contrasena")),
+                                    nombre: reader.GetString(reader.GetOrdinal("nombre")),
+                                    primerApellido: reader.GetString(reader.GetOrdinal("primer_apellido")),
+                                    segundoApellido: reader.IsDBNull(reader.GetOrdinal("segundo_apellido")) ? null : reader.GetString(reader.GetOrdinal("segundo_apellido")),
+                                    correo: reader.IsDBNull(reader.GetOrdinal("correo")) ? null : reader.GetString(reader.GetOrdinal("correo")),
+                                    telefono: reader.IsDBNull(reader.GetOrdinal("telefono")) ? null : reader.GetString(reader.GetOrdinal("telefono")),
+                                    paisOrigen: reader.IsDBNull(reader.GetOrdinal("pais_origen")) ? null : reader.GetString(reader.GetOrdinal("pais_origen")),
+                                    rol: reader.GetString(reader.GetOrdinal("rol"))
+                                );
+
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"Error al obtener huésped por usuario y contraseña: {ex.Message}");
+                throw new Exception("Error al obtener el huésped por usuario y contraseña: " + ex.Message);
+            }
+
+            return null;
+        }
 
         public static bool VerificarUsuarioExistente(string usuario, string nombre, string correo)
         {
@@ -70,7 +110,7 @@ namespace Sistema_de_Gestion_de_Rentas.Data
             catch (Exception ex)
             {
                 Console.Error.WriteLine($"Error al verificar usuario existente: {ex.Message}");
-                return true; // Consideramos que existe si ocurre un error.
+                return true;
             }
         }
 
@@ -87,22 +127,13 @@ namespace Sistema_de_Gestion_de_Rentas.Data
             string rol = "huesped")
         {
             if (usuario.ToLower() == "admin")
-            {
                 throw new ArgumentException("El nombre de usuario 'Admin' está reservado.");
-            }
 
-            if (rol.ToLower() == "admin")
-            {
-                if (ExisteAdmin())
-                {
-                    throw new ArgumentException("Ya existe un usuario con el rol de Admin en el sistema.");
-                }
-            }
+            if (rol.ToLower() == "admin" && ExisteAdmin())
+                throw new ArgumentException("Ya existe un usuario con el rol de Admin en el sistema.");
 
             if (VerificarUsuarioExistente(usuario, nombre, correo))
-            {
                 throw new ArgumentException("El nombre de usuario, nombre o correo ya están registrados.");
-            }
 
             try
             {
@@ -152,10 +183,7 @@ namespace Sistema_de_Gestion_de_Rentas.Data
                 Conexion conexion = new Conexion();
                 using (var conn = conexion.ObtenerConexion())
                 {
-                    string sql = @"
-                        SELECT COUNT(*) FROM Huespedes
-                        WHERE rol = 'admin';
-                    ";
+                    string sql = @"SELECT COUNT(*) FROM Huespedes WHERE rol = 'admin';";
 
                     using (var cmd = new NpgsqlCommand(sql, conn))
                     {
@@ -207,11 +235,7 @@ namespace Sistema_de_Gestion_de_Rentas.Data
                 Conexion conexion = new Conexion();
                 using (var conn = conexion.ObtenerConexion())
                 {
-                    string sql = @"
-                        SELECT * FROM Huespedes
-                        WHERE usuario = @usuario
-                        LIMIT 1;
-                    ";
+                    string sql = @"SELECT * FROM Huespedes WHERE usuario = @usuario LIMIT 1;";
 
                     using (var cmd = new NpgsqlCommand(sql, conn))
                     {
@@ -222,17 +246,18 @@ namespace Sistema_de_Gestion_de_Rentas.Data
                             if (reader.Read())
                             {
                                 return new Huesped(
-                                    reader.GetString(reader.GetOrdinal("identificacion")),
-                                    reader.GetString(reader.GetOrdinal("usuario")),
-                                    reader.GetString(reader.GetOrdinal("contrasena")),
-                                    reader.GetString(reader.GetOrdinal("nombre")),
-                                    reader.GetString(reader.GetOrdinal("primer_apellido")),
-                                    reader.IsDBNull(reader.GetOrdinal("segundo_apellido")) ? null : reader.GetString(reader.GetOrdinal("segundo_apellido")),
-                                    reader.IsDBNull(reader.GetOrdinal("correo")) ? null : reader.GetString(reader.GetOrdinal("correo")),
-                                    reader.IsDBNull(reader.GetOrdinal("telefono")) ? null : reader.GetString(reader.GetOrdinal("telefono")),
-                                    reader.IsDBNull(reader.GetOrdinal("pais_origen")) ? null : reader.GetString(reader.GetOrdinal("pais_origen")),
-                                    reader.GetString(reader.GetOrdinal("rol"))
-                                );
+                                  identificacion: reader.GetString(reader.GetOrdinal("identificacion")),
+                                  usuario: reader.GetString(reader.GetOrdinal("usuario")),
+                                  contrasena: reader.GetString(reader.GetOrdinal("contrasena")),
+                                  nombre: reader.GetString(reader.GetOrdinal("nombre")),
+                                  primerApellido: reader.GetString(reader.GetOrdinal("primer_apellido")),
+                                  segundoApellido: reader.IsDBNull(reader.GetOrdinal("segundo_apellido")) ? null : reader.GetString(reader.GetOrdinal("segundo_apellido")),
+                                  correo: reader.IsDBNull(reader.GetOrdinal("correo")) ? null : reader.GetString(reader.GetOrdinal("correo")),
+                                  telefono: reader.IsDBNull(reader.GetOrdinal("telefono")) ? null : reader.GetString(reader.GetOrdinal("telefono")),
+                                  paisOrigen: reader.IsDBNull(reader.GetOrdinal("pais_origen")) ? null : reader.GetString(reader.GetOrdinal("pais_origen")),
+                                  rol: reader.GetString(reader.GetOrdinal("rol"))
+                              );
+
                             }
                         }
                     }

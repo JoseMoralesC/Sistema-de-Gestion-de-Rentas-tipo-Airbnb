@@ -5,17 +5,17 @@ namespace Sistema_de_Gestion_de_Rentas.Services
 {
     public static class HuespedService
     {
-        // Nuevo método para verificar las credenciales y obtener el rol en una sola operación
-        public static string VerificarCredencialesYObtenerRol(string usuario, string contrasena)
+        // Método para autenticar usuario y obtener objeto Huesped completo
+        public static Huesped AutenticarUsuario(string usuario, string contrasena)
         {
             try
             {
-                // Llamamos al método de HuespedDAO para obtener el rol por usuario y contrasena
-                return HuespedDAO.ObtenerRolPorUsuarioYContrasena(usuario, contrasena);
+                // Método que devuelve el huésped si usuario y contraseña coinciden, o null si no
+                return HuespedDAO.ObtenerHuespedPorUsuarioYContrasena(usuario, contrasena);
             }
             catch (Exception ex)
             {
-                throw new Exception("Error al verificar las credenciales: " + ex.Message);
+                throw new Exception("Error al autenticar usuario: " + ex.Message);
             }
         }
 
@@ -31,7 +31,6 @@ namespace Sistema_de_Gestion_de_Rentas.Services
             string telefono,
             string paisOrigen)
         {
-            // Validación mínima
             if (string.IsNullOrWhiteSpace(identificacion) ||
                 string.IsNullOrWhiteSpace(usuario) ||
                 string.IsNullOrWhiteSpace(contrasena) ||
@@ -43,7 +42,6 @@ namespace Sistema_de_Gestion_de_Rentas.Services
 
             try
             {
-                // Llamamos al método sincrónico para insertar el huésped
                 HuespedDAO.InsertarHuesped(
                     identificacion, usuario, contrasena, nombre,
                     primerApellido, segundoApellido, correo, telefono, paisOrigen
@@ -51,20 +49,17 @@ namespace Sistema_de_Gestion_de_Rentas.Services
             }
             catch (ArgumentException ex)
             {
-                // Si el usuario, nombre o correo están duplicados, capturamos la excepción
                 throw new ArgumentException(ex.Message);
             }
             catch (Exception ex)
             {
-                // Capturamos otros errores generales
                 throw new Exception("Error al guardar el huésped: " + ex.Message);
             }
         }
 
-        // Método que valida las credenciales de inicio de sesión
+        // Método que valida las credenciales de inicio de sesión (opcional si usas AutenticarUsuario)
         public static bool VerificarCredenciales(string usuario, string contrasena)
         {
-            // Verifica si las credenciales son correctas
             return HuespedDAO.ValidarLogin(usuario, contrasena);
         }
 
@@ -78,8 +73,7 @@ namespace Sistema_de_Gestion_de_Rentas.Services
                 {
                     throw new Exception("Usuario no encontrado.");
                 }
-
-                return huesped.Rol; // Devuelve el rol del usuario
+                return huesped.Rol;
             }
             catch (Exception ex)
             {
@@ -93,9 +87,7 @@ namespace Sistema_de_Gestion_de_Rentas.Services
             try
             {
                 var huesped = HuespedDAO.ObtenerHuespedPorUsuario(usuario);
-
-                // Verificamos si el rol es "admin"
-                return huesped != null && huesped.Rol == "admin"; // Ahora se verifica el rol directamente
+                return huesped != null && huesped.Rol.ToLower() == "admin";
             }
             catch (Exception ex)
             {
@@ -103,17 +95,31 @@ namespace Sistema_de_Gestion_de_Rentas.Services
             }
         }
 
-        // Método que validará la disponibilidad del usuario, ahora usando el método sincrónico
+        // Método que valida la disponibilidad del usuario
         public static bool ValidarDisponibilidadUsuario(string usuario)
         {
             try
             {
                 var huesped = HuespedDAO.ObtenerHuespedPorUsuario(usuario);
-                return huesped == null; // Si el usuario no existe, es válido
+                return huesped == null;
             }
             catch (Exception ex)
             {
                 throw new Exception("Error al verificar la disponibilidad del usuario: " + ex.Message);
+            }
+        }
+
+        // Método que valida credenciales y devuelve el rol si son correctas, o null si no
+        public static string VerificarCredencialesYObtenerRol(string usuario, string contrasena)
+        {
+            try
+            {
+                var huesped = HuespedDAO.ObtenerHuespedPorUsuarioYContrasena(usuario, contrasena);
+                return huesped?.Rol;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al verificar credenciales y obtener rol: " + ex.Message);
             }
         }
     }

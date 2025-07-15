@@ -186,7 +186,14 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
 
         private void BtnPerfil_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Aquí iría el perfil del usuario (a implementar)");
+            // Crear instancia del formulario PerfilForm
+            var perfilForm = new PerfilForm();
+
+            // Mostrar el formulario como ventana modal (bloquea el formulario padre)
+            perfilForm.ShowDialog();
+
+            // Si prefieres que sea no modal (puedes interactuar con otros formularios), usa:
+            // perfilForm.Show();
         }
 
         private void BtnNosotros_Click(object sender, EventArgs e)

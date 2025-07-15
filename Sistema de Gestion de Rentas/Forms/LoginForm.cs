@@ -24,27 +24,22 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
 
         private void InitializeComponent()
         {
-            // Configuración de la ventana
-            this.FormBorderStyle = FormBorderStyle.None;  // Eliminar la barra de título
-            this.BackColor = Color.FromArgb(50, 50, 50);  // Fondo gris oscuro
-            this.StartPosition = FormStartPosition.CenterScreen; // Centrar el formulario
-            this.Size = new Size(450, 250); // Establecer tamaño rectangular (ancho más grande que alto)
+            this.FormBorderStyle = FormBorderStyle.None;
+            this.BackColor = Color.FromArgb(50, 50, 50);
+            this.StartPosition = FormStartPosition.CenterScreen;
+            this.Size = new Size(450, 250);
+            this.Region = Region.FromHrgn(CreateRoundRectRgn(0, 0, this.Width, this.Height, 30, 30));
 
-            // Aplicar bordes redondeados a la ventana
-            this.Region = Region.FromHrgn(CreateRoundRectRgn(0, 0, this.Width, this.Height, 30, 30)); // Esquinas redondeadas
-
-            // Etiqueta Usuario
             Label lblUsuario = new Label
             {
                 Text = "Usuario:",
                 Location = new Point(40, 50),
                 Size = new Size(100, 30),
-                ForeColor = Color.White // Cambiar color de texto a blanco
+                ForeColor = Color.White
             };
             EstilosUI.AplicarEstiloLabel(lblUsuario);
             Controls.Add(lblUsuario);
 
-            // Campo de texto Usuario
             txtUsuario = new TextBox
             {
                 Location = new Point(150, 50),
@@ -53,18 +48,16 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
             EstilosUI.AplicarEstiloTextBox(txtUsuario);
             Controls.Add(txtUsuario);
 
-            // Etiqueta Contraseña
             Label lblContrasena = new Label
             {
                 Text = "Contraseña:",
                 Location = new Point(40, 100),
                 Size = new Size(100, 30),
-                ForeColor = Color.White // Cambiar color de texto a blanco
+                ForeColor = Color.White
             };
             EstilosUI.AplicarEstiloLabel(lblContrasena);
             Controls.Add(lblContrasena);
 
-            // Campo de texto Contraseña
             txtContrasena = new TextBox
             {
                 Location = new Point(150, 100),
@@ -74,26 +67,24 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
             EstilosUI.AplicarEstiloTextBox(txtContrasena);
             Controls.Add(txtContrasena);
 
-            // Botón Ingresar
             btnIngresar = new Button
             {
                 Text = "Ingresar",
-                Size = new Size(200, 50),  // Hacer el botón más grande
-                Location = new Point((Width - 420) / 2, 170)  // Centrar el botón
+                Size = new Size(200, 50),
+                Location = new Point((Width - 420) / 2, 170)
             };
             EstilosUI.AplicarEstiloBoton(btnIngresar);
             btnIngresar.Click += BtnIngresar_Click;
             Controls.Add(btnIngresar);
 
-            // Botón Cerrar
             btnCerrar = new Button
             {
                 Text = "Cerrar",
-                Size = new Size(200, 50),  // Hacer el botón más grande
-                Location = new Point(btnIngresar.Right + 10, 170)  // Colocar al lado del botón Ingresar
+                Size = new Size(200, 50),
+                Location = new Point(btnIngresar.Right + 10, 170)
             };
             EstilosUI.AplicarEstiloBoton(btnCerrar);
-            btnCerrar.Click += BtnCerrar_Click;  // Evento para cerrar el LoginForm
+            btnCerrar.Click += (s, e) => this.Close();
             Controls.Add(btnCerrar);
         }
 
@@ -104,30 +95,43 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
 
             try
             {
-                // Verificar las credenciales y obtener el rol en una sola operación
                 string rol = HuespedService.VerificarCredencialesYObtenerRol(usuario, contrasena);
 
                 if (rol != null)
                 {
                     CustomMessageBoxForm.MostrarOpciones("Inicio de sesión exitoso.", "Aceptar", "");
 
+                    Huesped huesped = HuespedDAO.ObtenerHuespedPorUsuario(usuario);
+
+                    if (huesped == null)
+                    {
+                        CustomMessageBoxForm.MostrarOpciones("No se pudo cargar el perfil del usuario.", "Aceptar", "");
+                        return;
+                    }
+
+                    // Ajustar sesión con los datos del huésped
+                    SesionUsuario.Id = huesped.Identificacion; // string identificacion
+                    SesionUsuario.Usuario = huesped.Usuario;
+                    SesionUsuario.Nombre = huesped.Nombre;
+                    SesionUsuario.PrimerApellido = huesped.PrimerApellido;
+                    SesionUsuario.SegundoApellido = huesped.SegundoApellido;
+                    SesionUsuario.Correo = huesped.Correo;
+                    SesionUsuario.Telefono = huesped.Telefono;
+                    SesionUsuario.PaisOrigen = huesped.PaisOrigen;
+                    SesionUsuario.Rol = huesped.Rol;
+
                     if (rol.ToLower() == "admin")
                     {
-                        // Obtener el nombre del admin desde la base de datos
-                        Huesped admin = HuespedDAO.ObtenerHuespedPorUsuario(usuario);
-                        string nombreAdmin = admin != null ? admin.Nombre : "Admin"; // En caso de error, se muestra "Admin"
-
-                        // Abre el formulario de opciones para el Admin
-                        var opcionAdminForm = new OpcionAdminForm(nombreAdmin);
+                        var opcionAdminForm = new OpcionAdminForm(huesped.Nombre);
                         opcionAdminForm.Show();
-                        this.Close(); // Cierra el formulario de login
                     }
                     else
                     {
                         var panelUsuario = new PanelHuespedForm();
                         panelUsuario.Show();
-                        this.Close(); // Cierra el formulario de login
                     }
+
+                    this.Close();
                 }
                 else
                 {
@@ -138,12 +142,6 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
             {
                 CustomMessageBoxForm.MostrarOpciones("Error al iniciar sesión:\n" + ex.Message, "Aceptar", "");
             }
-        }
-
-        private void BtnCerrar_Click(object sender, EventArgs e)
-        {
-            // Cerrar solo el LoginForm, pero mantener abierto el InicioForm
-            this.Close();
         }
     }
 }
