@@ -7,7 +7,7 @@ namespace Sistema_de_Gestion_de_Rentas.Data
     public class Conexion
     {
         // Cadena de conexión a la base de datos PostgreSQL
-        private string connectionString = "Host=metro.proxy.rlwy.net;Port=19119;Username=postgres;Password=NPJusWKFapqvTFuMBchlOIuKQaWwtecg;Database=railway";
+        public string connectionString = "Host=metro.proxy.rlwy.net;Port=19119;Username=postgres;Password=NPJusWKFapqvTFuMBchlOIuKQaWwtecg;Database=railway";
 
         // Método para obtener la conexión de manera sincrónica
         public NpgsqlConnection ObtenerConexion()

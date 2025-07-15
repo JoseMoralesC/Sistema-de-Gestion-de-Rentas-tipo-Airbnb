@@ -4,6 +4,7 @@ using System;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using System.Collections.Generic;
 
 namespace Sistema_de_Gestion_de_Rentas.Forms
 {
@@ -97,45 +98,41 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
         private void CargarProvincias()
         {
             // Definir las provincias que deben mostrarse en el PanelHuesped
-            string[] nombres = {
-                "Alajuela", "Cartago", "San Jose", "Heredia",
-                "Puntarenas", "Guanacaste", "Limon", "Costa Rica"
+            var provincias = new Dictionary<string, int>
+            {
+                { "Alajuela", 2 },
+                { "Cartago", 3 },
+                { "San Jose", 1 },
+                { "Heredia", 4 },
+                { "Puntarenas", 6 },
+                { "Guanacaste", 5 },
+                { "Limon", 7 }
             };
 
             provinciasTable.Controls.Clear();
 
             // Llenar el grid 4x2
             int totalCeldas = provinciasTable.RowCount * provinciasTable.ColumnCount;
-            for (int i = 0; i < totalCeldas; i++)
+            int i = 0; // Indice para recorrer las provincias
+
+            foreach (var provincia in provincias)
             {
-                ProvinciaCard card;
-
-                if (i < nombres.Length)
+                // Creamos el card para cada provincia
+                ProvinciaCard card = new ProvinciaCard
                 {
-                    string nombre = nombres[i];
-                    card = new ProvinciaCard
-                    {
-                        Titulo = nombre,
-                        Imagen = CargarImagenProvincia(nombre.ToLower().Replace(" ", ""))
-                    };
+                    Titulo = provincia.Key,
+                    Imagen = CargarImagenProvincia(provincia.Key.ToLower().Replace(" ", ""))
+                };
 
-                    // Cambiar el evento para abrir el formulario de la provincia
-                    card.CardClick += (s, e) => AbrirFormularioProvincia(nombre);
-                }
-                else
-                {
-                    card = new ProvinciaCard
-                    {
-                        Titulo = "",
-                        Imagen = null
-                    };
-                }
+                // Asignamos el id de provincia al evento CardClick
+                card.CardClick += (s, e) => AbrirFormularioProvincia(provincia.Key, provincia.Value);
 
                 // Ajustamos la tarjeta para que ocupe el espacio de la celda, pero sin utilizar DockStyle.Fill
                 card.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
 
                 // Añadir la tarjeta a la celda correspondiente
-                provinciasTable.Controls.Add(card, i % 4, i / 4); // Añadimos la tarjeta de forma 4x2
+                provinciasTable.Controls.Add(card, i % 4, i / 4);
+                i++;
             }
         }
 
@@ -147,28 +144,26 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
             return null; // imagen por defecto o nula
         }
 
-        private void AbrirFormularioProvincia(string provincia)
+        private void AbrirFormularioProvincia(string provincia, int provinciaId)
         {
             // Usamos CustomMessageBoxForm para la confirmación solo con OK
-            CustomMessageBoxForm.Mostrar(
-                this,  // Pasamos el formulario actual como dueño
-                $"¿Deseas abrir los hospedajes de {provincia}?");
+            CustomMessageBoxForm.Mostrar(this, $"¿Deseas abrir los hospedajes de {provincia}?");
 
             // Procedemos solo si el usuario hizo clic en "Aceptar"
             if (DialogResult.OK == DialogResult.OK)  // Si presiona "OK"
             {
-                // Abrir el formulario de la provincia correspondiente
+                // Abrir el formulario de la provincia correspondiente y pasar el provincia_id
                 switch (provincia)
                 {
                     case "Cartago":
-                        CartagoForm cartagoForm = new CartagoForm();
+                        CartagoForm cartagoForm = new CartagoForm(provinciaId);
                         cartagoForm.Show();
                         break;
 
                     case "San Jose":
-                        //Si tienes otro formulario para San José, puedes descomentar esto
-                        //SanJoseForm sanJoseForm = new SanJoseForm();
-                        //sanJoseForm.Show();
+                        // Si tienes otro formulario para San José, puedes descomentar esto
+                        // SanJoseForm sanJoseForm = new SanJoseForm(provinciaId);
+                        // sanJoseForm.Show();
                         break;
 
                     // Puedes agregar más casos aquí si tienes formularios de otras provincias

@@ -1,4 +1,5 @@
-﻿using Sistema_de_Gestion_de_Rentas.Reservas;  // Importamos la clase Hospedaje
+﻿using Sistema_de_Gestion_de_Rentas.Data;
+using Npgsql;
 using System;
 using System.Collections.Generic;
 
@@ -6,44 +7,92 @@ namespace Sistema_de_Gestion_de_Rentas.Reservas
 {
     public static class HospedajeLogic
     {
-        // Lista estática de hospedajes para Cartago
-        private static List<Hospedaje> hospedajes = new List<Hospedaje>
-        {
-            new Hospedaje { Id = 1, Nombre = "Paraiso", Ubicacion = "Cartago", PrecioPorNoche = 100.00m, CapacidadPersonas = 4, Habitaciones = 2, Descripcion = "Un lugar tranquilo y lleno de naturaleza." },
-            new Hospedaje { Id = 2, Nombre = "Ujarras", Ubicacion = "Cartago", PrecioPorNoche = 80.00m, CapacidadPersonas = 3, Habitaciones = 1, Descripcion = "Alojamiento cómodo cerca de la naturaleza." },
-            new Hospedaje { Id = 3, Nombre = "Oroci", Ubicacion = "Cartago", PrecioPorNoche = 120.00m, CapacidadPersonas = 5, Habitaciones = 3, Descripcion = "Hospedaje con vistas hermosas al volcán." },
-            new Hospedaje { Id = 4, Nombre = "Irazu", Ubicacion = "Cartago", PrecioPorNoche = 150.00m, CapacidadPersonas = 6, Habitaciones = 4, Descripcion = "Un refugio de lujo al pie del volcán Irazú." }
-        };
+        private static readonly Conexion _conexion = new Conexion();
 
-        // Método para obtener hospedajes para los contenedores en la provincia de Cartago, filtrado por IDs
-        public static List<Hospedaje> ObtenerHospedajesParaContenedores(string provincia, List<int> idsHospedajes)
-        {
-            // Filtramos los hospedajes estáticos según la provincia y los IDs solicitados
-            var resultado = new List<Hospedaje>();
-
-            foreach (var hospedaje in hospedajes)
-            {
-                if (hospedaje.Ubicacion.Equals(provincia, StringComparison.OrdinalIgnoreCase) && idsHospedajes.Contains(hospedaje.Id))
-                {
-                    resultado.Add(hospedaje);
-                }
-            }
-
-            return resultado;
-        }
-
-        // Método para obtener un hospedaje por su ID
+        /// <summary>
+        /// Obtiene un hospedaje por su ID desde la base de datos,
+        /// siempre que esté activo (estado = true).
+        /// </summary>
         public static Hospedaje ObtenerHospedajePorID(int id)
         {
-            // Buscamos el hospedaje con el ID proporcionado
-            return hospedajes.Find(h => h.Id == id);
+            Hospedaje hospedaje = null;
+            string query = @"
+                SELECT id, nombre, ubicacion, precio_por_noche, capacidad_personas, habitaciones, descripcion
+                FROM hospedajes
+                WHERE id = @id AND estado = true
+            ";
+
+            _conexion.UsarConexion(conn =>
+            {
+                using var cmd = new NpgsqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@id", id);
+                using var reader = cmd.ExecuteReader();
+                if (reader.Read())
+                {
+                    hospedaje = new Hospedaje
+                    {
+                        Id = reader.GetInt32(0),
+                        Nombre = reader.GetString(1),
+                        Ubicacion = reader.GetString(2),
+                        PrecioPorNoche = reader.GetDecimal(3),
+                        CapacidadPersonas = reader.GetInt32(4),
+                        Habitaciones = reader.GetInt32(5),
+                        Descripcion = reader.GetString(6)
+                    };
+                }
+            });
+
+            return hospedaje;
         }
+
+        /// <summary>
+        /// Obtiene hospedajes por provincia y una lista de IDs, útiles para filtros específicos.
+        /// Solo devuelve los que tengan estado = true.
+        /// </summary>
+        public static List<Hospedaje> ObtenerHospedajesParaContenedores(string provincia, List<int> idsHospedajes)
+        {
+            var lista = new List<Hospedaje>();
+            string query = @"
+        SELECT id, nombre, ubicacion, precio_por_noche, capacidad_personas, habitaciones, descripcion
+        FROM hospedajes
+        WHERE lower(ubicacion) = lower(@provincia)
+          AND id = ANY(@ids)
+          AND estado = true
+    ";
+
+            _conexion.UsarConexion(conn =>
+            {
+                using var cmd = new NpgsqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@provincia", provincia);
+
+                var idsArray = idsHospedajes.ToArray();
+                var idsParam = cmd.Parameters.AddWithValue("@ids", idsArray);
+                idsParam.NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Array | NpgsqlTypes.NpgsqlDbType.Integer;
+
+                using var reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    lista.Add(new Hospedaje
+                    {
+                        Id = reader.GetInt32(0),
+                        Nombre = reader.GetString(1),
+                        Ubicacion = reader.GetString(2),
+                        PrecioPorNoche = reader.GetDecimal(3),
+                        CapacidadPersonas = reader.GetInt32(4),
+                        Habitaciones = reader.GetInt32(5),
+                        Descripcion = reader.GetString(6)
+                    });
+                }
+            });
+
+            return lista;
+        }
+
     }
 
-    // Clase que representa un hospedaje
     public class Hospedaje
     {
-        public int Id { get; set; }  // Identificador único del hospedaje
+        public int Id { get; set; }
         public string Nombre { get; set; }
         public string Ubicacion { get; set; }
         public decimal PrecioPorNoche { get; set; }

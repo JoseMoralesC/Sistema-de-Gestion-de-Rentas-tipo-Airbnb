@@ -23,8 +23,13 @@ namespace Sistema_de_Gestion_de_Rentas.ProvinciaForms
         private PictureBox banner;
         private Panel contentPanel;  // Panel para agregar barra de desplazamiento
 
-        public CartagoForm()
+        // Provincia ID de Cartago (ahora lo tomamos como parámetro)
+        private int provinciaId;
+
+        // Constructor con parámetro provinciaId
+        public CartagoForm(int provinciaId)
         {
+            this.provinciaId = provinciaId;  // Guardamos el provinciaId
             ConfigurarFormulario();
             InicializarControles();
         }
@@ -112,7 +117,7 @@ namespace Sistema_de_Gestion_de_Rentas.ProvinciaForms
         private void CargarHospedajes()
         {
             // Definir los IDs de los hospedajes que se deben cargar (fijos, uno para cada contenedor)
-            var idsHospedajes = new List<int> { 1, 2, 3, 4 };  // Ejemplo de IDs fijos para los 4 contenedores
+            var idsHospedajes = new List<int> { 5, 6, 7, 8 };  // Ejemplo de IDs fijos para los 4 contenedores
 
             // Obtener los hospedajes desde la lógica, solo aquellos con los IDs especificados
             var hospedajes = HospedajeLogic.ObtenerHospedajesParaContenedores("Cartago", idsHospedajes);
@@ -203,8 +208,8 @@ namespace Sistema_de_Gestion_de_Rentas.ProvinciaForms
             CustomMessageBoxForm.Mostrar(this, $"¿Desea hospedarse en: {hospedaje.Nombre}?");
 
             // Procedemos con la reservación solo si el usuario hizo clic en "OK"
-            // Se pasa el ID del hospedaje al constructor de ReservacionForm
-            ReservacionForm reservacionForm = new ReservacionForm(hospedaje.Id);
+            // Se pasa el ID del hospedaje y el provinciaId al constructor de ReservacionForm
+            ReservacionForm reservacionForm = new ReservacionForm(hospedaje.Id, provinciaId);
             reservacionForm.ShowDialog();  // Usamos ShowDialog() para hacerlo modal
         }
 
