@@ -107,7 +107,7 @@ namespace Sistema_de_Gestion_de_Rentas.ProvinciaForms
 
         private void CargarHospedajes()
         {
-            var idsHospedajes = new List<int> { 5, 6, 7, 8 };
+            var idsHospedajes = new List<int> { 29, 30, 31, 32 };
             var hospedajes = HospedajeLogic.ObtenerHospedajesParaContenedores("Puntarenas", idsHospedajes);
 
             provinciasTable.Controls.Clear();

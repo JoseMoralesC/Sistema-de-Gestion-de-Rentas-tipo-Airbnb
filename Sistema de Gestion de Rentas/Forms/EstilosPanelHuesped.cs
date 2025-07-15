@@ -21,7 +21,7 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
         // Estilo para la etiqueta de bienvenida
         public static void EstiloLabelBienvenida(Label lbl)
         {
-            lbl.Text = "Bienvenido a su panel de usuario";
+            lbl.Text = "Bienvenido a su Panel de Usuario";
             lbl.Font = new Font("Arial", 26, FontStyle.Bold);
             lbl.AutoSize = true;
             lbl.Location = new Point(50, 120);  // Asegúrate de que esto esté dentro de un rango visible

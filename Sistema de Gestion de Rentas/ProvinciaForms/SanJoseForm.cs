@@ -142,7 +142,7 @@ namespace Sistema_de_Gestion_de_Rentas.ProvinciaForms
 
         private Image CargarImagenHospedaje(string nombreHospedaje)
         {
-            string carpetaHospedajes = Path.Combine(Application.StartupPath, "Resources", "San Jose");
+            string carpetaHospedajes = Path.Combine(Application.StartupPath, "Resources", "Sanjose");
             string rutaImagen = Path.Combine(carpetaHospedajes, $"{nombreHospedaje}.jpg");
 
             if (File.Exists(rutaImagen))
