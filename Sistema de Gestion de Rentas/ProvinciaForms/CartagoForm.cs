@@ -5,6 +5,7 @@ using System;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using System.Collections.Generic;  // Asegúrate de que esta línea esté presente si usas listas
 
 namespace Sistema_de_Gestion_de_Rentas.ProvinciaForms
 {
@@ -86,8 +87,8 @@ namespace Sistema_de_Gestion_de_Rentas.ProvinciaForms
             // Configuración de filas y columnas para que sean proporcionales
             provinciasTable.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50));  // 50% para cada columna
             provinciasTable.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50));  // 50% para cada columna
-            provinciasTable.RowStyles.Add(new RowStyle(SizeType.Percent, 50));  // 50% para cada fila
-            provinciasTable.RowStyles.Add(new RowStyle(SizeType.Percent, 50));  // 50% para cada fila
+            provinciasTable.RowStyles.Add(new RowStyle(SizeType.Percent, 40));  // Reducimos la altura de las filas (40% cada una)
+            provinciasTable.RowStyles.Add(new RowStyle(SizeType.Percent, 60));  // Para la segunda fila también reducimos un poco la altura
 
             // Ajustamos la separación entre celdas
             provinciasTable.CellBorderStyle = TableLayoutPanelCellBorderStyle.Inset;
@@ -164,7 +165,7 @@ namespace Sistema_de_Gestion_de_Rentas.ProvinciaForms
         private Image CargarImagenHospedaje(string nombreHospedaje)
         {
             // Ruta de la carpeta Cartago dentro de Resources
-            string carpetaHospedajes = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources", "Cartago");
+            string carpetaHospedajes = Path.Combine(Application.StartupPath, "Resources", "Cartago");
 
             // Nombre del archivo de la imagen que debe coincidir con el nombre del hospedaje
             string rutaImagen = Path.Combine(carpetaHospedajes, $"{nombreHospedaje}.jpg");
@@ -172,24 +173,29 @@ namespace Sistema_de_Gestion_de_Rentas.ProvinciaForms
             // Verificamos si el archivo de imagen existe en esa ruta
             if (File.Exists(rutaImagen))
             {
-                return Image.FromFile(rutaImagen);  // Si existe, lo cargamos
+                // Cargar la imagen
+                Image imagen = Image.FromFile(rutaImagen);
+
+                // Retornar la imagen cargada
+                return imagen;
             }
             else
             {
-                // Cargar la imagen "no disponible" si no se encuentra la imagen específica del hospedaje
-                string imagenNoDisponible = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources", "NoDisponible.jpg");
+                // Cargar la imagen "no disponible"
+                string imagenNoDisponible = Path.Combine(Application.StartupPath, "Resources", "NoDisponible.jpg");
+
                 if (File.Exists(imagenNoDisponible))
                 {
+                    // Cargar y retornar la imagen "no disponible"
                     return Image.FromFile(imagenNoDisponible);
                 }
                 else
                 {
                     Console.WriteLine("Imagen de 'No Disponible' no encontrada");
-                    return null;  // Si no hay imagen de "No disponible", podemos retornar null o una imagen predeterminada
+                    return null;  // Si no se encuentra la imagen de "No disponible", retornamos null
                 }
             }
         }
-
 
         private void AbrirFormularioReservas(Hospedaje hospedaje)
         {
@@ -201,7 +207,6 @@ namespace Sistema_de_Gestion_de_Rentas.ProvinciaForms
             ReservacionForm reservacionForm = new ReservacionForm(hospedaje.Id);
             reservacionForm.ShowDialog();  // Usamos ShowDialog() para hacerlo modal
         }
-
 
         private void BtnRegresar_Click(object sender, EventArgs e)
         {
