@@ -65,7 +65,8 @@ namespace Sistema_de_Gestion_de_Rentas.Data
             catch (Exception ex)
             {
                 Console.WriteLine($"Error durante la operación de base de datos: {ex.Message}");
-                throw new Exception("Error al ejecutar la operación con la base de datos.");
+                // Lanzar la excepción original para preservar detalles
+                throw;
             }
         }
 

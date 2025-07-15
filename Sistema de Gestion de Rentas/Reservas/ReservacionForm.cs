@@ -209,13 +209,27 @@ namespace Sistema_de_Gestion_de_Rentas.Reservas
 
                 modal.Close();
                 CustomMessageBoxForm.Mostrar(this, "Reserva confirmada");
+                this.Close();
+
+            }
+            catch (PostgresException pgEx)
+            {
+                string mensaje = $"Mensaje: {pgEx.Message}\n" +
+                                 $"Detalle: {pgEx.Detail}\n" +
+                                 $"Código: {pgEx.SqlState}\n" +
+                                 $"Dónde: {pgEx.Where}\n" +
+                                 $"Pista: {pgEx.Hint}\n" +
+                                 $"Posición: {pgEx.Position}";
+
+                CustomMessageBoxForm.Mostrar(this, $" Error de PostgreSQL:\n\n{mensaje}");
             }
             catch (Exception ex)
             {
                 string mensajeErrorCompleto = ObtenerMensajeCompletoExcepcion(ex);
-                CustomMessageBoxForm.Mostrar(this, $"Error al procesar la reserva:\n{mensajeErrorCompleto}");
+                CustomMessageBoxForm.Mostrar(this, $"Error general al procesar la reserva:\n{mensajeErrorCompleto}");
             }
         }
+
 
         private string ObtenerMensajeCompletoExcepcion(Exception ex)
         {

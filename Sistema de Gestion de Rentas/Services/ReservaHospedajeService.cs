@@ -50,10 +50,10 @@ namespace Sistema_de_Gestion_de_Rentas.Services
                 throw new Exception("No se pudo establecer una conexión con la base de datos.");
 
             string query = @"
-                INSERT INTO reservas 
-                (huesped_id, hospedaje_id, fecha_entrada, fecha_salida, cantidad_personas, cantidad_noches, provincia_id)
-                VALUES 
-                (@huesped_id, @hospedaje_id, @fecha_entrada, @fecha_salida, @cantidad_personas, @cantidad_noches, @provincia_id)";
+        INSERT INTO reservas 
+        (huesped_id, hospedaje_id, fecha_entrada, fecha_salida, cantidad_personas, cantidad_noches, estado)
+        VALUES 
+        (@huesped_id, @hospedaje_id, @fecha_entrada, @fecha_salida, @cantidad_personas, @cantidad_noches, @estado)";
 
             _conexion.UsarConexion(conn =>
             {
@@ -61,37 +61,27 @@ namespace Sistema_de_Gestion_de_Rentas.Services
                 {
                     using (var cmd = new NpgsqlCommand(query, conn))
                     {
-                        // Depuración de valores
-                        Console.WriteLine("Datos de la reserva:");
-                        Console.WriteLine($"HuespedId: {reserva.HuespedId}");
-                        Console.WriteLine($"HospedajeId: {reserva.HospedajeId}");
-                        Console.WriteLine($"FechaEntrada: {reserva.FechaEntrada}");
-                        Console.WriteLine($"FechaSalida: {reserva.FechaSalida}");
-                        Console.WriteLine($"CantidadPersonas: {reserva.CantidadPersonas}");
-                        Console.WriteLine($"CantidadNoches: {reserva.CantidadNoches}");
-                        Console.WriteLine($"ProvinciaId: {reserva.ProvinciaId}");
-
                         cmd.Parameters.AddWithValue("@huesped_id", reserva.HuespedId);
                         cmd.Parameters.AddWithValue("@hospedaje_id", reserva.HospedajeId);
                         cmd.Parameters.AddWithValue("@fecha_entrada", reserva.FechaEntrada);
                         cmd.Parameters.AddWithValue("@fecha_salida", reserva.FechaSalida);
                         cmd.Parameters.AddWithValue("@cantidad_personas", reserva.CantidadPersonas);
                         cmd.Parameters.AddWithValue("@cantidad_noches", reserva.CantidadNoches);
-                        cmd.Parameters.AddWithValue("@provincia_id", reserva.ProvinciaId);
+                        cmd.Parameters.AddWithValue("@estado", true); // siempre lo guardamos como reservado en cada reserva.
 
                         cmd.ExecuteNonQuery();
-                        Console.WriteLine("Reserva creada exitosamente.");
                     }
                 }
-                catch (PostgresException ex)
+                catch (Exception ex)
                 {
-                    Console.WriteLine($"[PostgreSQL ERROR] Código: {ex.SqlState} - {ex.Message}");
-                    Console.WriteLine($"Detalle: {ex.Detail}");
-                    Console.WriteLine($"Where: {ex.Where}");
+                    Console.WriteLine($"[ERROR GENERAL] {ex.Message}");
+                    if (ex.InnerException != null)
+                        Console.WriteLine($"[INNER] {ex.InnerException.Message}");
                     throw;
                 }
             });
         }
+
 
         public void GuardarHospedaje(int provinciaId, string nombre, string ubicacion, decimal precioPorNoche, int capacidadPersonas, int habitaciones, string descripcion)
         {
