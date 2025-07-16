@@ -14,10 +14,10 @@ namespace Sistema_de_Gestion_de_Rentas.Data
         {
             try
             {
-                // Crear la conexión
+               
                 var conn = new NpgsqlConnection(connectionString);
 
-                // Intentar abrir la conexión
+                
                 conn.Open();
 
                 return conn;
@@ -45,13 +45,13 @@ namespace Sistema_de_Gestion_de_Rentas.Data
             }
             catch (Exception ex)
             {
-                // Capturar el error si la conexión falla
+                
                 Console.WriteLine($"Error al intentar conectar a la base de datos: {ex.Message}");
                 throw new Exception("No se pudo establecer una conexión con la base de datos.");
             }
         }
 
-        // Método para obtener una conexión utilizando 'using' para garantizar el cierre automático
+        
         public void UsarConexion(Action<NpgsqlConnection> accion)
         {
             try
@@ -59,18 +59,18 @@ namespace Sistema_de_Gestion_de_Rentas.Data
                 using (var conn = new NpgsqlConnection(connectionString))
                 {
                     conn.Open();
-                    accion(conn);  // Ejecutar la acción proporcionada con la conexión abierta
+                    accion(conn);  
                 }
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error durante la operación de base de datos: {ex.Message}");
-                // Lanzar la excepción original para preservar detalles
+                
                 throw;
             }
         }
 
-        // Método asincrónico para ejecutar una operación utilizando 'using'
+        
         public async Task UsarConexionAsync(Func<NpgsqlConnection, Task> accionAsync)
         {
             try
@@ -78,7 +78,7 @@ namespace Sistema_de_Gestion_de_Rentas.Data
                 using (var conn = new NpgsqlConnection(connectionString))
                 {
                     await conn.OpenAsync();
-                    await accionAsync(conn);  // Ejecutar la acción asincrónica proporcionada con la conexión abierta
+                    await accionAsync(conn);  
                 }
             }
             catch (Exception ex)

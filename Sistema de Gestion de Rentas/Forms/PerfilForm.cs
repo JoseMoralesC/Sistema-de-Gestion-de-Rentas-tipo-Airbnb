@@ -32,7 +32,7 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
         private void ConfigurarFormulario()
         {
             this.FormBorderStyle = FormBorderStyle.None;
-            this.BackColor = Color.FromArgb(30, 30, 40); // Fondo oscuro
+            this.BackColor = Color.FromArgb(30, 30, 40); 
             this.StartPosition = FormStartPosition.CenterScreen;
             this.Size = new Size(600, 400);
             this.Region = Region.FromHrgn(CreateRoundRectRgn(0, 0, Width, Height, 20, 20));
@@ -53,7 +53,7 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
             EstilosUI.AplicarEstiloLabel(lblTitulo);
             Controls.Add(lblTitulo);
 
-            // Obtener datos del usuario actual desde SesionUsuario
+            
             Huesped usuario = ObtenerUsuarioActual();
 
             lblNombre = CrearLabel($"Nombre: {usuario.Nombre} {usuario.PrimerApellido} {usuario.SegundoApellido}", 100);
@@ -75,7 +75,7 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
             btnCerrar.Click += (s, e) => this.Close();
             Controls.Add(btnCerrar);
 
-            // Botón Editar
+           
             btnEditar = new Button
             {
                 Text = "Editar",
@@ -87,7 +87,7 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
             btnEditar.Click += BtnEditar_Click;
             Controls.Add(btnEditar);
 
-            // Botón Historial
+            
             btnHistorial = new Button
             {
                 Text = "Historial",
@@ -118,16 +118,16 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
             return lbl;
         }
 
-        // Método auxiliar para obtener el usuario actual completo desde SesionUsuario
+       
         private Huesped ObtenerUsuarioActual()
         {
-            // Suponiendo que SesionUsuario.Usuario contiene el nombre de usuario
+           
             var usuario = SesionUsuario.Usuario;
 
             if (string.IsNullOrEmpty(usuario))
                 throw new Exception("No hay usuario logueado.");
 
-            // Obtener el usuario completo desde DAO
+            
             Huesped huesped = HuespedDAO.ObtenerHuespedPorUsuario(usuario);
 
             if (huesped == null)
@@ -138,13 +138,13 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
         private void BtnEditar_Click(object sender, EventArgs e)
         {
             EditarForm editarForm = new EditarForm();
-            editarForm.ShowDialog(); // Modal
+            editarForm.ShowDialog(); 
         }
 
         private void BtnHistorial_Click(object sender, EventArgs e)
         {
             HistorialForm historialForm = new HistorialForm();
-            historialForm.ShowDialog(); // Modal
+            historialForm.ShowDialog(); 
         }
 
     }

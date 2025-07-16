@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Sistema_de_Gestion_de_Rentas.Data;
+using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.IO;
@@ -12,6 +13,7 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
         private Button btnGestionarProvincias;
         private Button btnGestionarHospedajes;
         private Button btnGestionarReservas;
+        private Button btnIrPanelHuesped;  
 
         public PanelAdministradorForm()
         {
@@ -51,6 +53,48 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
             btnGestionarReservas.Click += BtnGestionarReservas_Click;
             Controls.Add(btnGestionarReservas);
             AplicarBordesRedondeados(btnGestionarReservas, borderRadius);
+
+            CrearBotonPanelHuesped();  
+        }
+
+        private void CrearBotonPanelHuesped()
+        {
+           
+            if (SesionUsuario.Rol.ToLower() == "admin")
+            {
+                btnIrPanelHuesped = new Button
+                {
+                    Text = "Panel Huesped",
+                    Size = new Size(300, 50),  
+                    BackColor = Color.FromArgb(30, 30, 30),
+                    ForeColor = Color.White
+                };
+
+                EstilosUI.AplicarEstiloBoton(btnIrPanelHuesped);
+
+                
+                btnIrPanelHuesped.Location = new Point(this.ClientSize.Width - btnIrPanelHuesped.Width - 20, 50);  // 20px de margen desde la derecha
+
+                btnIrPanelHuesped.Click += BtnIrPanelHuesped_Click;
+                Controls.Add(btnIrPanelHuesped);
+            }
+
+            
+            this.Resize += (s, e) =>
+            {
+                if (btnIrPanelHuesped != null)
+                {
+                    btnIrPanelHuesped.Location = new Point(this.ClientSize.Width - btnIrPanelHuesped.Width - 20, 50);
+                }
+            };
+        }
+
+        private void BtnIrPanelHuesped_Click(object sender, EventArgs e)
+        {
+            
+            var panelHuespedForm = new PanelHuespedForm();
+            panelHuespedForm.Show();
+            this.Hide();  
         }
 
         private Button CrearBoton(string texto, int x, int y)

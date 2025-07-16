@@ -109,7 +109,7 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
                 var dt = new DataTable();
                 adapter.Fill(dt);
 
-                // Cambiar el valor de 'estado' a texto
+
                 dt.Columns.Add("EstadoTexto", typeof(string));
                 foreach (DataRow row in dt.Rows)
                 {
@@ -128,7 +128,7 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
                 dgvReservas.Columns["cantidad_noches"].HeaderText = "Cantidad Noches";
                 dgvReservas.Columns["EstadoTexto"].HeaderText = "Estado";
 
-                // Eliminar la columna original 'estado'
+
                 dgvReservas.Columns["estado"].Visible = false;
 
                 dgvReservas.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
@@ -222,7 +222,7 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
                 return;
             }
 
-            // Mostrar el mensaje con solo un botón de OK y que se cierre con ENTER
+         
             MostrarCustomMessageBox("¿Estás seguro de que quieres eliminar esta reserva?", "Confirmación");
 
             try
@@ -246,7 +246,7 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
         private void MostrarCustomMessageBox(string mensaje, string titulo)
         {
             CustomMessageBoxForm customMessageBox = new CustomMessageBoxForm(mensaje, titulo);
-            customMessageBox.ShowDialog(this); // Mostrar el formulario como un diálogo modal
+            customMessageBox.ShowDialog(this); 
         }
     }
 }

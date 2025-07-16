@@ -2,7 +2,7 @@
 
 namespace Sistema_de_Gestion_de_Rentas.Data
 {
-    // Enum para el Rol del Huesped
+
     public enum RolHuesped
     {
         Huesped,
@@ -39,7 +39,6 @@ namespace Sistema_de_Gestion_de_Rentas.Data
             Rol = rol;
         }
 
-        // Método para validar las propiedades básicas (si se desea)
         public bool ValidarDatos()
         {
             return !string.IsNullOrWhiteSpace(Identificacion) &&

@@ -88,13 +88,13 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
             EstilosUI.AplicarEstiloDataGridView(dgvHospedajes);
             Controls.Add(dgvHospedajes);
 
-            // Alineación de botones al centro en la parte inferior
+            
             int btnHeight = 45, spacing = 15;
             int totalBtn = 5;
             int btnWidth = (ClientSize.Width - 40 - spacing * (totalBtn - 1)) / totalBtn;
             int baseY = ClientSize.Height - btnHeight - 20;
 
-            // Calcular la posición horizontal para centrar los botones
+           
             int totalBtnWidth = btnWidth * totalBtn + spacing * (totalBtn - 1);
             int offsetX = (ClientSize.Width - totalBtnWidth) / 2;
 

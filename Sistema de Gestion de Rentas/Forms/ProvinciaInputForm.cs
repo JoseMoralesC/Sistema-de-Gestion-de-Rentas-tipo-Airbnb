@@ -26,7 +26,7 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
         {
             InitializeComponent();
             Text = "";
-            Size = new Size(800, 300); // más ancho y alto
+            Size = new Size(800, 300); 
             FormBorderStyle = FormBorderStyle.None;
             BackColor = Color.FromArgb(25, 25, 35);
             Region = Region.FromHrgn(CreateRoundRectRgn(0, 0, Width, Height, 20, 20));
@@ -34,7 +34,7 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
             ShowInTaskbar = false;
             TopMost = true;
 
-            // Posición superior centrada
+            
             Load += (s, e) =>
             {
                 var screen = Screen.FromControl(this.Owner ?? this);
@@ -48,7 +48,7 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
                     SendMessage(Handle, 0x112, 0xf012, 0);
             };
 
-            // Código
+           
             var lblCod = new Label
             {
                 Text = "Código:",
@@ -69,7 +69,6 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
             };
             Controls.Add(txtCodigo);
 
-            // Nombre
             var lblNom = new Label
             {
                 Text = "Nombre de la provincia:",
@@ -90,15 +89,14 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
             };
             Controls.Add(txtNombre);
 
-            // Estilos al mostrarse
+            
             Shown += (s, e) =>
             {
                 EstilosUI.AplicarEstiloTextBox(txtCodigo);
                 EstilosUI.AplicarEstiloTextBox(txtNombre);
             };
 
-            // Botones
-            // Botones
+            
             int espacioEntreBotones = 30;
             int botonAncho = 120;
             int botonAlto = 45;
@@ -127,7 +125,7 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
             Controls.Add(btnCancelar);
 
 
-            // Validación
+         
             btnAceptar.Click += (s, e) =>
             {
                 if (!int.TryParse(txtCodigo.Text.Trim(), out int cod) || cod <= 0)

@@ -6,7 +6,7 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
 {
     public class ModalBackgroundForm : Form
     {
-        // Propiedades configurables
+        
         public Color FondoColor { get; set; } = Color.Black;
         public double Opacidad { get; set; } = 0.5;
 
@@ -24,7 +24,7 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
 
         private void InitializeForm()
         {
-            // Configuración de la ventana
+            
             FormBorderStyle = FormBorderStyle.None;
             StartPosition = FormStartPosition.Manual;
             WindowState = FormWindowState.Maximized;
@@ -34,21 +34,21 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
             BackColor = FondoColor;
             Opacity = Opacidad;
 
-            // Evitar que se cierre al hacer clic
+            
             this.Click += (s, e) => { /* No hacer nada */ };
         }
 
-        // Evita que se cierre al presionar Esc
+
         protected override bool ProcessDialogKey(Keys keyData)
         {
             if (keyData == Keys.Escape)
             {
-                return true; // Ignora la tecla
+                return true; 
             }
             return base.ProcessDialogKey(keyData);
         }
 
-        // Método para cerrar el formulario manualmente
+        
         public void CerrarFormulario()
         {
             this.Close();

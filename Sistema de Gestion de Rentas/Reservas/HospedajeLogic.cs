@@ -9,10 +9,6 @@ namespace Sistema_de_Gestion_de_Rentas.Reservas
     {
         private static readonly Conexion _conexion = new Conexion();
 
-        /// <summary>
-        /// Obtiene un hospedaje por su ID desde la base de datos,
-        /// siempre que esté activo (estado = true).
-        /// </summary>
         public static Hospedaje ObtenerHospedajePorID(int id)
         {
             Hospedaje hospedaje = null;
@@ -45,10 +41,6 @@ namespace Sistema_de_Gestion_de_Rentas.Reservas
             return hospedaje;
         }
 
-        /// <summary>
-        /// Obtiene hospedajes por provincia y una lista de IDs, útiles para filtros específicos.
-        /// Solo devuelve los que tengan estado = true.
-        /// </summary>
         public static List<Hospedaje> ObtenerHospedajesParaContenedores(string provincia, List<int> idsHospedajes)
         {
             var lista = new List<Hospedaje>();

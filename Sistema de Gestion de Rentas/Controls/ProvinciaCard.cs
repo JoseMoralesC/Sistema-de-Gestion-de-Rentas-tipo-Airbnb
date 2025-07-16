@@ -9,12 +9,12 @@ namespace Sistema_de_Gestion_de_Rentas.Controls
         private PictureBox pictureBox;
         private Label lblTitulo;
 
-        // Nueva propiedad para almacenar el ID del hospedaje
+        //  almacenar el ID del hospedaje
         public int IdHospedaje { get; private set; }
 
         public string Titulo
         {
-            get => lblTitulo?.Text;  // Protegemos contra null si lblTitulo es null.
+            get => lblTitulo?.Text;  
             set
             {
                 if (lblTitulo != null)
@@ -26,7 +26,7 @@ namespace Sistema_de_Gestion_de_Rentas.Controls
 
         public Image Imagen
         {
-            get => pictureBox?.Image;  // Protegemos contra null si pictureBox es null.
+            get => pictureBox?.Image;  
             set
             {
                 if (pictureBox != null)
@@ -45,7 +45,7 @@ namespace Sistema_de_Gestion_de_Rentas.Controls
 
         private void InicializarComponentes()
         {
-            // Establecer el tamaño del control base
+           
             Size = new Size(300, 250);
             BorderStyle = BorderStyle.FixedSingle;
 
@@ -53,8 +53,8 @@ namespace Sistema_de_Gestion_de_Rentas.Controls
             pictureBox = new PictureBox
             {
                 Dock = DockStyle.Top,
-                Height = 180, // Mantener una altura inicial, ajustable según el tamaño del contenedor
-                SizeMode = PictureBoxSizeMode.Zoom // Ajustar la imagen para que se vea correctamente sin distorsión
+                Height = 180, 
+                SizeMode = PictureBoxSizeMode.Zoom 
             };
             pictureBox.Click += (s, e) => CardClick?.Invoke(this, EventArgs.Empty);
             Controls.Add(pictureBox);
@@ -73,20 +73,20 @@ namespace Sistema_de_Gestion_de_Rentas.Controls
             lblTitulo.Click += (s, e) => CardClick?.Invoke(this, EventArgs.Empty);
             Controls.Add(lblTitulo);
 
-            // Cambiar el cursor al pasar por encima
+            
             Cursor = Cursors.Hand;
 
-            // El control responde al clic (también se activa cuando se hace clic en el PictureBox o en el título)
+            
             this.Click += (s, e) => CardClick?.Invoke(this, EventArgs.Empty);
         }
 
-        // Nuevo método para establecer el ID del hospedaje
+        // metodo para establecer el ID del hospedaje
         public void EstablecerIdHospedaje(int id)
         {
             IdHospedaje = id;
         }
 
-        // Método para manejar el cambio de tamaño del control
+        // Metodo para manejar el cambio de tamaño del control
         protected override void OnResize(EventArgs e)
         {
             base.OnResize(e);
@@ -94,9 +94,9 @@ namespace Sistema_de_Gestion_de_Rentas.Controls
             // Asegurarse de que los controles estén inicializados antes de usarlos
             if (pictureBox != null && lblTitulo != null)
             {
-                // Aseguramos que el PictureBox se ajuste dinámicamente a la nueva altura del control
-                pictureBox.Height = (int)(this.ClientSize.Height * 0.7);  // El PictureBox ocupará el 70% de la altura total
-                lblTitulo.Height = this.ClientSize.Height - pictureBox.Height;  // El título ocupa el resto
+                
+                pictureBox.Height = (int)(this.ClientSize.Height * 0.7);  
+                lblTitulo.Height = this.ClientSize.Height - pictureBox.Height;  
             }
         }
     }

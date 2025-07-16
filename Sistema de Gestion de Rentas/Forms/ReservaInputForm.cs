@@ -31,7 +31,7 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
         {
             InitializeComponent();
             Text = "";
-            Size = new Size(500, 650); // Aumentamos la altura para hacerlo más largo
+            Size = new Size(500, 650); 
             FormBorderStyle = FormBorderStyle.None;
             BackColor = Color.FromArgb(25, 25, 35);
             Region = Region.FromHrgn(CreateRoundRectRgn(0, 0, Width, Height, 20, 20));
@@ -39,7 +39,7 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
             ShowInTaskbar = false;
             TopMost = true;
 
-            // Posicionamiento
+            
             Load += (s, e) =>
             {
                 var screen = Screen.FromControl(this.Owner ?? this);
@@ -53,12 +53,12 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
                     SendMessage(Handle, 0x112, 0xf012, 0);
             };
 
-            // Campos
-            int posY = 20; // Variable para manejar la posición vertical de los controles
-            int margenHorizontal = 20; // Margen para los lados de los controles
-            int anchoCampos = this.ClientSize.Width - (margenHorizontal * 2); // Ancho de los campos
+            
+            int posY = 20; 
+            int margenHorizontal = 20; 
+            int anchoCampos = this.ClientSize.Width - (margenHorizontal * 2); 
 
-            // Huesped
+            
             var lblHuesped = new Label
             {
                 Text = "ID Huesped:",
@@ -79,9 +79,8 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
             };
             Controls.Add(txtHuespedID);
 
-            posY += 70; // Incrementamos la posición vertical para el siguiente control
+            posY += 70; 
 
-            // Hospedaje
             var lblHospedaje = new Label
             {
                 Text = "ID Hospedaje:",
@@ -102,9 +101,8 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
             };
             Controls.Add(txtHospedajeID);
 
-            posY += 70; // Actualizamos la posición para el siguiente campo
+            posY += 70; 
 
-            // Fecha Entrada
             var lblFechaEntrada = new Label
             {
                 Text = "Fecha Entrada:",
@@ -127,7 +125,7 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
 
             posY += 70;
 
-            // Fecha Salida
+            
             var lblFechaSalida = new Label
             {
                 Text = "Fecha Salida:",
@@ -150,7 +148,7 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
 
             posY += 70;
 
-            // Cantidad de Personas
+            
             var lblPersonas = new Label
             {
                 Text = "Cantidad de Personas:",
@@ -173,7 +171,7 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
 
             posY += 70;
 
-            // Cantidad de Noches
+            
             var lblNoches = new Label
             {
                 Text = "Cantidad de Noches:",
@@ -196,7 +194,7 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
 
             posY += 70;
 
-            // Estado (solo para mostrar)
+            
             var lblEstado = new Label
             {
                 Text = "Estado:",
@@ -208,26 +206,26 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
             EstilosUI.AplicarEstiloLabel(lblEstado);
             Controls.Add(lblEstado);
 
-            // Mostrar el estado como texto (activo o cancelado)
+            
             var lblEstadoValor = new Label
             {
-                Text = estado ? "Activo" : "Cancelado", // Asigna el valor del estado (Activo o Cancelado)
+                Text = estado ? "Activo" : "Cancelado", 
                 Location = new Point(margenHorizontal, posY + 30),
                 Size = new Size(anchoCampos, 35),
                 Font = new Font("Segoe UI", 14),
-                ForeColor = Color.White, // Color de texto
+                ForeColor = Color.White, 
                 TextAlign = ContentAlignment.MiddleCenter
             };
             Controls.Add(lblEstadoValor);
 
             posY += 70;
 
-            // Botones
+            
             int espacioEntreBotones = 30;
             int botonAncho = 120;
             int botonAlto = 45;
 
-            // Centrar los botones
+            
             int leftBase = (this.ClientSize.Width - (botonAncho * 2 + espacioEntreBotones)) / 2;
             int topBotones = posY + 30;
 
@@ -251,7 +249,7 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
             EstilosUI.AplicarEstiloBoton(btnCancelar);
             Controls.Add(btnCancelar);
 
-            // Validación
+            
             btnAceptar.Click += (s, e) =>
             {
                 if (!int.TryParse(txtHuespedID.Text.Trim(), out int huespedID) || huespedID <= 0)

@@ -13,16 +13,16 @@ namespace Sistema_de_Gestion_de_Rentas.Reservas
         private Hospedaje hospedajeSeleccionado;
         private ReservaHospedajeService _reservaHospedajeService;
 
-        private int provinciaId;  // NUEVO campo para guardar provinciaId
+        private int provinciaId;  
 
-        // Componentes del formulario
+        
         private Label lblTituloHospedaje, lblPrecio, lblUbicacion, lblCapacidad, lblHabitaciones, lblDescripcion;
         private Label lblHuespedId, lblHospedajeId, lblFechaEntrada, lblFechaSalida, lblCantidadPersonas, lblCantidadNoches, lblTotalCancelar;
         private DateTimePicker dtpFechaEntrada, dtpFechaSalida;
         private TextBox txtCantidadPersonas, txtCantidadNoches, txtTotalCancelar, txtHuespedId;
         private Button btnConfirmar, btnCancelar;
 
-        // Constructor actualizado que recibe el ID del hospedaje y el provinciaId
+        
         public ReservacionForm(int idHospedaje, int provinciaId)
         {
             this.provinciaId = provinciaId;
@@ -147,7 +147,7 @@ namespace Sistema_de_Gestion_de_Rentas.Reservas
             if (dtpFechaEntrada.Value > dtpFechaSalida.Value)
             {
                 CustomMessageBoxForm.Mostrar(this, "La fecha de entrada no puede ser posterior a la fecha de salida.");
-                dtpFechaEntrada.Value = dtpFechaSalida.Value; // Resetea para evitar inconsistencia
+                dtpFechaEntrada.Value = dtpFechaSalida.Value; 
                 return;
             }
 
@@ -202,7 +202,7 @@ namespace Sistema_de_Gestion_de_Rentas.Reservas
                     FechaSalida = fechaSalida,
                     CantidadPersonas = cantidadPersonas,
                     CantidadNoches = cantidadNoches,
-                    ProvinciaId = this.provinciaId  // <-- asignar provinciaId aquí
+                    ProvinciaId = this.provinciaId  
                 };
 
                 _reservaHospedajeService.CrearReserva(reserva);

@@ -23,54 +23,54 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
 
         private void InitializeComponent()
         {
-            // Configuración de la ventana
-            this.FormBorderStyle = FormBorderStyle.None;  // Eliminar la barra de título
-            this.BackColor = Color.FromArgb(50, 50, 50);  // Fondo gris oscuro
-            this.StartPosition = FormStartPosition.CenterScreen; // Centrar el formulario
-            this.Size = new Size(850, 300); // Tamaño adecuado para los botones y el texto
+           
+            this.FormBorderStyle = FormBorderStyle.None;  
+            this.BackColor = Color.FromArgb(50, 50, 50);  
+            this.StartPosition = FormStartPosition.CenterScreen; 
+            this.Size = new Size(850, 300); 
 
-            // Aplicar bordes redondeados a la ventana
+            
             this.Region = Region.FromHrgn(CreateRoundRectRgn(0, 0, this.Width, this.Height, 30, 30)); // Esquinas redondeadas
 
-            // Etiqueta de bienvenida (centrada en la parte superior)
+           
             Label lblBienvenida = new Label
             {
                 Text = $"Bienvenido, {nombreAdmin}!",
-                Location = new Point((Width - 300) / 2, 50),  // Centrado horizontalmente
+                Location = new Point((Width - 300) / 2, 50),  
                 Size = new Size(300, 30),
-                ForeColor = Color.White,  // Cambiar color de texto a blanco
+                ForeColor = Color.White,  
                 Font = new Font("Segoe UI", 14, FontStyle.Bold)
             };
             Controls.Add(lblBienvenida);
 
-            // Botón Panel Huesped
+            
             btnPanelHuesped = new Button
             {
                 Text = "Huesped",
-                Size = new Size(200, 50),  // Botón grande
-                Location = new Point(100, 150)  // Primer botón a la izquierda
+                Size = new Size(200, 50),  
+                Location = new Point(100, 150)  
             };
             EstilosUI.AplicarEstiloBoton(btnPanelHuesped);
             btnPanelHuesped.Click += BtnPanelHuesped_Click;
             Controls.Add(btnPanelHuesped);
 
-            // Botón Panel Administrador
+            
             btnPanelAdmin = new Button
             {
                 Text = "Administrador",
-                Size = new Size(200, 50),  // Botón grande
-                Location = new Point(320, 150)  // Botón al centro
+                Size = new Size(200, 50),  
+                Location = new Point(320, 150)  
             };
             EstilosUI.AplicarEstiloBoton(btnPanelAdmin);
             btnPanelAdmin.Click += BtnPanelAdmin_Click;
             Controls.Add(btnPanelAdmin);
 
-            // Botón Cerrar
+            
             btnCerrar = new Button
             {
                 Text = "Cerrar",
-                Size = new Size(200, 50),  // Botón grande
-                Location = new Point(540, 150)  // Botón a la derecha
+                Size = new Size(200, 50), 
+                Location = new Point(540, 150)  
             };
             EstilosUI.AplicarEstiloBoton(btnCerrar);
             btnCerrar.Click += BtnCerrar_Click;
@@ -79,23 +79,23 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
 
         private void BtnPanelHuesped_Click(object sender, EventArgs e)
         {
-            // Acción al hacer clic en "Panel Huesped"
+            
             var panelHuesped = new PanelHuespedForm();
             panelHuesped.Show();
-            this.Close(); // Cierra el formulario actual
+            this.Close(); 
         }
 
         private void BtnPanelAdmin_Click(object sender, EventArgs e)
         {
-            // Acción al hacer clic en "Panel Administrador"
+           
             var panelAdmin = new PanelAdministradorForm();
             panelAdmin.Show();
-            this.Close(); // Cierra el formulario actual
+            this.Close(); 
         }
 
         private void BtnCerrar_Click(object sender, EventArgs e)
         {
-            // Cierra solo el formulario OpcionAdmin y regresa al formulario principal
+            
             this.Close();
         }
     }

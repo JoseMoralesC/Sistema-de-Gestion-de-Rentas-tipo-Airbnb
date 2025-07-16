@@ -109,8 +109,8 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
                         return;
                     }
 
-                    // Ajustar sesión con los datos del huésped
-                    SesionUsuario.Id = huesped.Identificacion; // string identificacion
+                    
+                    SesionUsuario.Id = huesped.Identificacion; 
                     SesionUsuario.Usuario = huesped.Usuario;
                     SesionUsuario.Nombre = huesped.Nombre;
                     SesionUsuario.PrimerApellido = huesped.PrimerApellido;

@@ -10,7 +10,7 @@ public static class EstilosUI
         int nLeftRect, int nTopRect, int nRightRect, int nBottomRect,
         int nWidthEllipse, int nHeightEllipse);
 
-    // Función reutilizable para aplicar bordes redondeados
+    
     private static void AplicarBordesRedondeados(Control control, int radioX, int radioY)
     {
         control.Region = Region.FromHrgn(CreateRoundRectRgn(0, 0, control.Width, control.Height, radioX, radioY));
@@ -28,7 +28,7 @@ public static class EstilosUI
         boton.MouseLeave += (s, e) => boton.BackColor = Color.FromArgb(30, 144, 255);
     }
 
-    public static void AplicarEstiloTextBox(TextBox txt)  // Corregido el nombre del método
+    public static void AplicarEstiloTextBox(TextBox txt)  
     {
         txt.Font = new Font("Segoe UI", 11);
         txt.BackColor = Color.White;
@@ -75,7 +75,7 @@ public static class EstilosUI
         dgv.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
     }
 
-    // Nuevo método para NumericUpDown
+
     public static void AplicarEstiloNumericUpDown(NumericUpDown nud)
     {
         nud.Font = new Font("Segoe UI", 11);
@@ -85,10 +85,10 @@ public static class EstilosUI
         nud.TextAlign = HorizontalAlignment.Left;
         nud.Size = new Size(nud.Width, 35);
 
-        // No es posible redondear fácilmente un NumericUpDown, por lo que no aplicamos bordes redondeados
+ 
     }
 
-    // Nuevo método para ComboBox
+
     public static void AplicarEstiloComboBox(ComboBox cb)
     {
         cb.Font = new Font("Segoe UI", 11);
@@ -100,7 +100,7 @@ public static class EstilosUI
         cb.Padding = new Padding(8, 5, 8, 5);
     }
 
-    // Nuevo método para DateTimePicker
+
     public static void AplicarEstiloDateTimePicker(DateTimePicker dtp)
     {
         dtp.Font = new Font("Segoe UI", 11);

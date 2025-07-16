@@ -104,7 +104,7 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
             try
             {
                 using var conn = new Conexion().ObtenerConexion();
-                // conn.Open(); // Solo si es necesario
+               
                 string query = "SELECT id, id_provincia, nombre FROM provincias ORDER BY id";
                 using var cmd = new NpgsqlCommand(query, conn);
                 using var adapter = new NpgsqlDataAdapter(cmd);
@@ -204,7 +204,7 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
                 cmd.ExecuteNonQuery();
                 CargarDatos();
 
-                // Mensaje de confirmación después de eliminar
+                
                 MostrarCustomMessageBox($"Provincia '{nom}' eliminada.", "Información", MessageBoxButtons.OK);
             }
             catch (Exception ex)
@@ -215,7 +215,7 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
 
         private DialogResult MostrarCustomMessageBox(string mensaje, string titulo = "Mensaje", MessageBoxButtons botones = MessageBoxButtons.OK)
         {
-            // Siempre mostramos un mensaje con botón OK solo
+            
             return CustomMessageBoxForm.Mostrar(this, mensaje);
         }
     }

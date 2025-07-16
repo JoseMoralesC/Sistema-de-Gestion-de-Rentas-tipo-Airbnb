@@ -159,7 +159,7 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
             if (exito)
             {
                 CustomMessageBoxForm.MostrarOpciones("Datos actualizados correctamente.", "Aceptar", "");
-                this.Close(); // Si querés que se cierre al guardar
+                this.Close(); 
             }
             else
             {

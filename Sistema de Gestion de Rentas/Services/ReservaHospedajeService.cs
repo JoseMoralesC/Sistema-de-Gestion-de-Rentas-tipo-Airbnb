@@ -67,7 +67,7 @@ namespace Sistema_de_Gestion_de_Rentas.Services
                         cmd.Parameters.AddWithValue("@fecha_salida", reserva.FechaSalida);
                         cmd.Parameters.AddWithValue("@cantidad_personas", reserva.CantidadPersonas);
                         cmd.Parameters.AddWithValue("@cantidad_noches", reserva.CantidadNoches);
-                        cmd.Parameters.AddWithValue("@estado", true); // siempre lo guardamos como reservado en cada reserva.
+                        cmd.Parameters.AddWithValue("@estado", true); 
 
                         cmd.ExecuteNonQuery();
                     }

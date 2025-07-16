@@ -5,12 +5,12 @@ namespace Sistema_de_Gestion_de_Rentas.Services
 {
     public static class HuespedService
     {
-        // Método para autenticar usuario y obtener objeto Huesped completo
+        
         public static Huesped AutenticarUsuario(string usuario, string contrasena)
         {
             try
             {
-                // Método que devuelve el huésped si usuario y contraseña coinciden, o null si no
+                
                 return HuespedDAO.ObtenerHuespedPorUsuarioYContrasena(usuario, contrasena);
             }
             catch (Exception ex)
@@ -19,7 +19,7 @@ namespace Sistema_de_Gestion_de_Rentas.Services
             }
         }
 
-        // Método para guardar un nuevo huésped
+
         public static void GuardarHuesped(
             string identificacion,
             string usuario,
@@ -57,13 +57,13 @@ namespace Sistema_de_Gestion_de_Rentas.Services
             }
         }
 
-        // Método que valida las credenciales de inicio de sesión (opcional si usas AutenticarUsuario)
+        
         public static bool VerificarCredenciales(string usuario, string contrasena)
         {
             return HuespedDAO.ValidarLogin(usuario, contrasena);
         }
 
-        // Método que obtiene el rol de un usuario
+        
         public static string ObtenerRolUsuario(string usuario)
         {
             try
@@ -81,7 +81,7 @@ namespace Sistema_de_Gestion_de_Rentas.Services
             }
         }
 
-        // Método que valida si el usuario tiene rol de administrador
+
         public static bool EsAdmin(string usuario)
         {
             try
@@ -95,7 +95,7 @@ namespace Sistema_de_Gestion_de_Rentas.Services
             }
         }
 
-        // Método que valida la disponibilidad del usuario
+
         public static bool ValidarDisponibilidadUsuario(string usuario)
         {
             try
@@ -109,7 +109,7 @@ namespace Sistema_de_Gestion_de_Rentas.Services
             }
         }
 
-        // Método que valida credenciales y devuelve el rol si son correctas, o null si no
+        
         public static string VerificarCredencialesYObtenerRol(string usuario, string contrasena)
         {
             try

@@ -61,7 +61,7 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
                 "1° Apellido", "2° Apellido", "Correo", "Teléfono", "País"
             };
 
-            TextBox[] campos = new TextBox[8]; // solo los 8 primeros serán TextBox
+            TextBox[] campos = new TextBox[8]; 
             int top = 30;
             int labelWidth = 160;
             int spacing = 25;
@@ -117,7 +117,7 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
             txtCorreo = campos[6];
             txtTelefono = campos[7];
 
-            // Botón Guardar
+            
             btnGuardar = new Button
             {
                 Text = "Guardar Huésped",
@@ -128,7 +128,7 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
             btnGuardar.Click += BtnGuardar_Click;
             Controls.Add(btnGuardar);
 
-            // Botón Cerrar
+            
             btnCerrar = new Button
             {
                 Text = "Cerrar",
@@ -156,20 +156,20 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
             {
                 string paisSeleccionado = cbPaisOrigen.SelectedItem?.ToString() ?? "";
 
-                // Validar si el nombre de usuario es "admin"
+                
                 if (txtUsuario.Text.Trim().ToLower() == "admin")
                 {
                     throw new ArgumentException("El nombre de usuario 'admin' está reservado y no puede ser utilizado.");
                 }
 
-                // Validar si el usuario o correo ya existen
+                
                 if (!HuespedService.ValidarDisponibilidadUsuario(txtUsuario.Text.Trim()))
                 {
                     throw new ArgumentException("El nombre de usuario ya está registrado.");
                 }
 
 
-                // Guardar el huesped
+                
                 HuespedService.GuardarHuesped(
                     txtIdentificacion.Text.Trim(),
                     txtUsuario.Text.Trim(),

@@ -11,8 +11,8 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using iText.Kernel.Colors;
-using SystemColor = System.Drawing.Color;  // Alias para System.Drawing.Color
-using iTextColor = iText.Kernel.Colors.Color;  // Alias para iText.Kernel.Colors.Color
+using SystemColor = System.Drawing.Color; 
+using iTextColor = iText.Kernel.Colors.Color;  
 
 namespace Sistema_de_Gestion_de_Rentas.Forms
 {
@@ -36,22 +36,22 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
 
         private void ConfigurarFormulario()
         {
-            // Aumentamos el tamaño del formulario para darle más espacio
+            
             this.FormBorderStyle = FormBorderStyle.None;
-            this.BackColor = SystemColor.FromArgb(30, 30, 40);  // Color de fondo
+            this.BackColor = SystemColor.FromArgb(30, 30, 40);  
             this.StartPosition = FormStartPosition.CenterScreen;
-            this.Size = new Size(900, 700);  // Aumentamos tanto el ancho como el alto
+            this.Size = new Size(900, 700);  
             this.Region = Region.FromHrgn(CreateRoundRectRgn(0, 0, Width, Height, 20, 20));
         }
 
         private void InicializarControles()
         {
-            // Título del formulario
+            
             lblTitulo = new Label
             {
                 Text = "Historial de Reservas",
                 Font = new Font("Segoe UI", 20, FontStyle.Bold),
-                ForeColor = SystemColor.White,  // Color del texto
+                ForeColor = SystemColor.White,  
                 AutoSize = false,
                 TextAlign = ContentAlignment.MiddleCenter,
                 Dock = DockStyle.Top,
@@ -60,30 +60,30 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
             EstilosUI.AplicarEstiloLabel(lblTitulo);
             Controls.Add(lblTitulo);
 
-            // Panel de reservas
+            
             panelReservas = new FlowLayoutPanel
             {
                 Dock = DockStyle.Top,
                 AutoScroll = true,
                 Width = this.ClientSize.Width,
-                Height = this.ClientSize.Height - 180,  // Ajustamos la altura para los botones
+                Height = this.ClientSize.Height - 180,  
                 Location = new Point(0, 60),
                 Padding = new Padding(20),
             };
             Controls.Add(panelReservas);
 
-            // Botones de "Imprimir", "Actualizar" y "Cerrar"
+          
             var panelBotones = new FlowLayoutPanel
             {
-                FlowDirection = FlowDirection.LeftToRight,  // Alineamos los botones horizontalmente
+                FlowDirection = FlowDirection.LeftToRight,  
                 Dock = DockStyle.Bottom,
-                Height = 60,  // Altura fija para los botones
+                Height = 60,  
                 Padding = new Padding(10),
                 Margin = new Padding(0),
                 AutoSize = true
             };
 
-            // Botón Imprimir
+
             btnImprimir = new Button
             {
                 Text = "Imprimir",
@@ -94,7 +94,7 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
             btnImprimir.Click += BtnImprimir_Click;
             panelBotones.Controls.Add(btnImprimir);
 
-            // Botón Actualizar
+     
             btnActualizar = new Button
             {
                 Text = "Actualizar",
@@ -105,7 +105,7 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
             btnActualizar.Click += (s, e) => CargarHistorial();
             panelBotones.Controls.Add(btnActualizar);
 
-            // Botón Cerrar
+           
             btnCerrar = new Button
             {
                 Text = "Cerrar",
@@ -244,12 +244,12 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
         {
             string pdfPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "Historial_Reservas.pdf");
 
-            // Intentamos eliminar el archivo si ya existe
+           
             if (File.Exists(pdfPath))
             {
                 try
                 {
-                    File.Delete(pdfPath);  // Eliminar el archivo antes de crearlo
+                    File.Delete(pdfPath);  
                 }
                 catch (IOException ex)
                 {
@@ -260,12 +260,12 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
 
             try
             {
-                // Crear el documento PDF
+                
                 using (var writer = new PdfWriter(pdfPath))
                 using (var pdf = new PdfDocument(writer))
                 {
                     var document = new Document(pdf);
-                    // Código de creación de PDF aquí
+                    
 
                     CustomMessageBoxForm.MostrarOpciones($"El archivo PDF ha sido exportado correctamente a {pdfPath}", "Aceptar", "");
                 }

@@ -11,6 +11,6 @@ namespace Sistema_de_Gestion_de_Rentas.Reservas
         public DateTime FechaSalida { get; set; }
         public int CantidadPersonas { get; set; }
         public int CantidadNoches { get; set; }
-        public bool Estado { get; set; } // true = reservado, false = cancelado
+        public bool Estado { get; set; } 
     }
 }

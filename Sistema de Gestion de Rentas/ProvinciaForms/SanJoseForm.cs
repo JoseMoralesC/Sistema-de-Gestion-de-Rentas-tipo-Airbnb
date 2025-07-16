@@ -136,7 +136,7 @@ namespace Sistema_de_Gestion_de_Rentas.ProvinciaForms
                 }
 
                 card.Dock = DockStyle.Fill;
-                provinciasTable.Controls.Add(card, i % provinciasTable.ColumnCount, i / provinciasTable.RowCount);
+                provinciasTable.Controls.Add(card, i % provinciasTable.ColumnCount, i / provinciasTable.ColumnCount);
             }
         }
 

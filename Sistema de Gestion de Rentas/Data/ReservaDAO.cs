@@ -7,7 +7,7 @@ namespace Sistema_de_Gestion_de_Rentas.Data
 {
     public static class ReservaDAO
     {
-        // Método para obtener el nombre del lugar según el hospedaje_id
+
         public static string ObtenerLugarPorHospedajeId(int hospedajeId)
         {
             string lugar = string.Empty;
@@ -38,7 +38,6 @@ namespace Sistema_de_Gestion_de_Rentas.Data
             return lugar;
         }
 
-        // Método para obtener reservas por huesped_id
         public static List<ReservaHistorialDTO> ObtenerReservasPorHuespedId(int huespedId)
         {
             var reservas = new List<ReservaHistorialDTO>();
@@ -92,10 +91,10 @@ namespace Sistema_de_Gestion_de_Rentas.Data
 
             try
             {
-                // Intentamos obtener el Id como int
-                int huespedId = SesionUsuario.ObtenerIdComoInt();  // Conversión correcta
+               
+                int huespedId = SesionUsuario.ObtenerIdComoInt();  
 
-                // Verificamos que el huespedId es válido
+                
                 if (huespedId <= 0)
                 {
                     throw new InvalidOperationException("El ID del huésped no es válido.");
@@ -103,16 +102,16 @@ namespace Sistema_de_Gestion_de_Rentas.Data
 
                 conexion.UsarConexion(conn =>
                 {
-                    // Creamos la consulta SQL para actualizar el estado de la reserva
+                    
                     string query = "UPDATE Reservas SET Estado = @Estado WHERE Id = @Id";
 
                     using (var cmd = new NpgsqlCommand(query, conn))
                     {
-                        // Agregamos los parámetros necesarios
+                        
                         cmd.Parameters.AddWithValue("@Estado", nuevoEstado);
-                        cmd.Parameters.AddWithValue("@Id", reservaId);  // Aquí pasamos el reservaId como int
+                        cmd.Parameters.AddWithValue("@Id", reservaId);  
 
-                        // Ejecutamos el comando y verificamos el número de filas afectadas
+                        
                         int filasAfectadas = cmd.ExecuteNonQuery();
 
                         if (filasAfectadas > 0)
@@ -126,7 +125,7 @@ namespace Sistema_de_Gestion_de_Rentas.Data
             }
             catch (Exception ex)
             {
-                // Si ocurre un error, lo capturamos
+               
                 Console.WriteLine($"Error al actualizar el estado de la reserva: {ex.Message}");
                 return false;
             }

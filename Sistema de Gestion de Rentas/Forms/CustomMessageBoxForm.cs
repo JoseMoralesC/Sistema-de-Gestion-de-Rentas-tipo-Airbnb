@@ -28,10 +28,10 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
             BackColor = Color.FromArgb(45, 45, 48);
             ForeColor = Color.White;
 
-            // Bordes redondeados para el formulario
+           
             Region = Region.FromHrgn(CreateRoundRectRgn(0, 0, Width, Height, 20, 20));
 
-            // Label para el mensaje
+            
             lblMensaje = new Label
             {
                 Text = mensaje,
@@ -43,25 +43,24 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
             };
             Controls.Add(lblMensaje);
 
-            // Botones: Si y No
             btnSi = CrearBoton("Sí", DialogResult.Yes);
             btnNo = CrearBoton("No", DialogResult.No);
 
-            // Configuración del layout de los botones
+            
             OrganizarBotones();
 
-            // Establecer el botón Aceptar (Enter) y Cancelar (Esc)
+            
             AcceptButton = btnSi;
             CancelButton = btnNo;
 
-            // Aseguramos que el formulario esté al frente
+            
             this.TopMost = true;
             this.Activate();
             this.KeyPreview = true;
             this.KeyDown += CustomMessageBoxForm_KeyDown;
         }
 
-        // Crear botón con estilo
+        
         private Button CrearBoton(string texto, DialogResult resultado)
         {
             var boton = new Button
@@ -77,7 +76,7 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
             return boton;
         }
 
-        // Organizar botones en el formulario
+        
         private void OrganizarBotones()
         {
             int padding = 10;
@@ -87,7 +86,7 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
             btnSi.Location = new Point(startX, ClientSize.Height - 70);
             btnNo.Location = new Point(btnSi.Right + padding, ClientSize.Height - 70);
 
-            // Si no se deben mostrar los botones de opción
+            
             if (!_showTwoButtons)
             {
                 btnNo.Visible = false;
@@ -104,7 +103,7 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
             Controls.Add(btnNo);
         }
 
-        // Manejo de teclas presionadas (Enter)
+       
         private void CustomMessageBoxForm_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
@@ -121,42 +120,40 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
             this.Activate();
         }
 
-        // Métodos estáticos para mostrar el cuadro de mensaje
 
-        // Método sin IWin32Window, solo con mensaje
         public static DialogResult Mostrar(string mensaje)
         {
             using var box = new CustomMessageBoxForm(mensaje);
             box._showTwoButtons = false;
-            return box.ShowDialog();  // No se pasa IWin32Window
+            return box.ShowDialog(); 
         }
 
-        // Método con IWin32Window y mensaje
+        
         public static DialogResult Mostrar(IWin32Window owner, string mensaje)
         {
             using var box = new CustomMessageBoxForm(mensaje);
             box._showTwoButtons = false;
-            return box.ShowDialog(owner);  // Aquí sí pasamos IWin32Window
+            return box.ShowDialog(owner);  
         }
 
-        // Método con opciones
+        
         public static DialogResult MostrarOpciones(string mensaje, string opcion1 = "Sí", string opcion2 = "No")
         {
             using var box = new CustomMessageBoxForm(mensaje);
             box._showTwoButtons = true;
             box._opcion1 = opcion1;
             box._opcion2 = opcion2;
-            return box.ShowDialog();  // No se pasa IWin32Window
+            return box.ShowDialog();  
         }
 
-        // Método con opciones y IWin32Window
+      
         public static DialogResult MostrarOpciones(IWin32Window owner, string mensaje, string opcion1 = "Sí", string opcion2 = "No")
         {
             using var box = new CustomMessageBoxForm(mensaje);
             box._showTwoButtons = true;
             box._opcion1 = opcion1;
             box._opcion2 = opcion2;
-            return box.ShowDialog(owner);  // Aquí pasamos IWin32Window
+            return box.ShowDialog(owner);  
         }
     }
 }

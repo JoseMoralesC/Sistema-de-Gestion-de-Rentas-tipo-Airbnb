@@ -6,6 +6,7 @@ using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using System.Collections.Generic;
 using System.Drawing;
+using Sistema_de_Gestion_de_Rentas.Data;  
 
 namespace Sistema_de_Gestion_de_Rentas.Forms
 {
@@ -19,6 +20,7 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
         private Button btnCerrarSesion;
         private Button btnPerfil;
         private Button btnNosotros;
+        private Button btnIrPanelAdmin;  
 
         private TableLayoutPanel provinciasTable;
         private Label lblBienvenida;
@@ -29,6 +31,7 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
         {
             ConfigurarFormulario();
             InicializarControles();
+            CrearBotonAdmin(); 
             CargarProvincias();
         }
 
@@ -41,49 +44,49 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
 
         private void InicializarControles()
         {
-            // Botón "Cerrar Sesión" (izquierda)
+           
             btnCerrarSesion = new Button();
             EstilosPanelHuesped.EstiloBotonCerrarSesion(btnCerrarSesion);
             btnCerrarSesion.Text = "Cerrar Sesión";
             btnCerrarSesion.Click += BtnCerrarSesion_Click;
             Controls.Add(btnCerrarSesion);
 
-            // Botón "Perfil" (centro)
+            
             btnPerfil = new Button();
             EstilosPanelHuesped.EstiloBotonCerrarSesion(btnPerfil);
             btnPerfil.Text = "Perfil";
             btnPerfil.Click += BtnPerfil_Click;
             Controls.Add(btnPerfil);
 
-            // Botón "Nosotros" (derecha)
+            
             btnNosotros = new Button();
             EstilosPanelHuesped.EstiloBotonCerrarSesion(btnNosotros);
             btnNosotros.Text = "Nosotros";
             btnNosotros.Click += BtnNosotros_Click;
             Controls.Add(btnNosotros);
 
-            // Etiqueta "Bienvenido"
+           
             lblBienvenida = new Label();
             EstilosPanelHuesped.EstiloLabelBienvenida(lblBienvenida);
-            lblBienvenida.Text = "Bienvenido a su panel de usuario";  // El mensaje
+            lblBienvenida.Text = "Bienvenido a su panel de usuario";  
             lblBienvenida.AutoSize = true;
             lblBienvenida.TextAlign = ContentAlignment.TopCenter;
-            lblBienvenida.Location = new Point((this.ClientSize.Width / 2) - (lblBienvenida.Width / 2), 50);  
+            lblBienvenida.Location = new Point((this.ClientSize.Width / 2) - (lblBienvenida.Width / 2), 50);
             Controls.Add(lblBienvenida);
 
-            // Banner
+            
             banner = new PictureBox();
             EstilosPanelHuesped.EstiloBanner(banner, Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources", "banner.jpg"), 200, this.ClientSize.Width - 100);
             banner.Location = new Point(50, 180);
             Controls.Add(banner);
 
-            // Mensaje
+            
             lblMensaje = new Label();
             EstilosPanelHuesped.EstiloLabelMensaje(lblMensaje);
             lblMensaje.Location = new Point(50, banner.Bottom + 10);
             Controls.Add(lblMensaje);
 
-            // Provincias
+            
             provinciasTable = new TableLayoutPanel();
             EstilosPanelHuesped.EstiloTableLayoutPanelProvincias(provinciasTable);
             provinciasTable.Location = new Point(50, lblMensaje.Bottom + 20);
@@ -99,23 +102,60 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
             provinciasTable.CellBorderStyle = TableLayoutPanelCellBorderStyle.None;
             Controls.Add(provinciasTable);
 
-            // Posiciones iniciales de los botones 
+            
             btnCerrarSesion.Location = new Point(50, this.ClientSize.Height - 100);
             btnPerfil.Location = new Point((this.ClientSize.Width / 2) - (btnPerfil.Width / 2), this.ClientSize.Height - 100);
             btnNosotros.Location = new Point(this.ClientSize.Width - btnNosotros.Width - 50, this.ClientSize.Height - 100);
 
-            // Ajustar todo al redimensionar
+            
             this.Resize += (s, e) =>
             {
                 banner.Width = this.ClientSize.Width - 100;
                 lblMensaje.Size = new Size(this.ClientSize.Width - 100, 30);
                 provinciasTable.Size = new Size(this.ClientSize.Width - 100, 520);
 
-                // Mantener los botones en la parte inferior
+                
                 btnCerrarSesion.Location = new Point(50, this.ClientSize.Height - 100);
                 btnPerfil.Location = new Point((this.ClientSize.Width / 2) - (btnPerfil.Width / 2), this.ClientSize.Height - 100);
                 btnNosotros.Location = new Point(this.ClientSize.Width - btnNosotros.Width - 50, this.ClientSize.Height - 100);
+
+                
+                if (btnIrPanelAdmin != null)
+                {
+                    btnIrPanelAdmin.Location = new Point(this.ClientSize.Width - btnIrPanelAdmin.Width - 20, 50);  // 20px de margen desde la derecha
+                }
             };
+        }
+
+        private void CrearBotonAdmin()
+        {
+           
+            if (SesionUsuario.Rol.ToLower() == "admin")
+            {
+                
+                btnIrPanelAdmin = new Button
+                {
+                    Text = "Panel Admin",
+                    Size = new Size(300, 50), 
+                    BackColor = Color.FromArgb(30, 30, 30),
+                    ForeColor = Color.White
+                };
+                EstilosUI.AplicarEstiloBoton(btnIrPanelAdmin);
+
+                
+                btnIrPanelAdmin.Location = new Point(this.ClientSize.Width - btnIrPanelAdmin.Width - 20, 50);  // 20px de margen desde la derecha
+
+                btnIrPanelAdmin.Click += BtnIrPanelAdmin_Click;
+                Controls.Add(btnIrPanelAdmin);
+            }
+        }
+
+        private void BtnIrPanelAdmin_Click(object sender, EventArgs e)
+        {
+            
+            var panelAdminForm = new PanelAdministradorForm();
+            panelAdminForm.Show();
+            this.Hide(); 
         }
 
         private void CargarProvincias()
@@ -151,11 +191,11 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
                 i++;
             }
 
-            // Ahora agregar el card para Costa Rica
+           
             ProvinciaCard cardCostaRica = new ProvinciaCard
             {
                 Titulo = "Costa Rica",
-                Imagen = CargarImagenProvincia("costarica") // Suponiendo que tienes una imagen con este nombre
+                Imagen = CargarImagenProvincia("costarica") 
             };
 
             cardCostaRica.CardClick += (s, e) => AbrirFormularioCostaRica();
@@ -166,17 +206,16 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
 
         private void AbrirFormularioCostaRica()
         {
-            // Mostrar un mensaje personalizado
+           
             CustomMessageBoxForm.Mostrar(this, "¿Desea ver el mapa de Costa Rica?");
 
             if (DialogResult.OK == DialogResult.OK)
             {
-                // Si el usuario acepta, abre el formulario de Costa Rica
+                
                 CostaRicaForm costaRicaForm = new CostaRicaForm();
                 costaRicaForm.Show();
             }
         }
-        
 
         private Image CargarImagenProvincia(string nombreArchivo)
         {
@@ -242,14 +281,11 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
             Close();
         }
 
+
         private void BtnPerfil_Click(object sender, EventArgs e)
         {
-            
             var perfilForm = new PerfilForm();
-
             perfilForm.ShowDialog();
-
-
         }
 
         private void BtnNosotros_Click(object sender, EventArgs e)

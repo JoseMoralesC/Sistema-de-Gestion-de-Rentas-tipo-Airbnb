@@ -25,9 +25,9 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
         private void ConfigurarFormulario()
         {
             this.FormBorderStyle = FormBorderStyle.None;
-            this.BackColor = Color.FromArgb(30, 30, 40); // Fondo oscuro
+            this.BackColor = Color.FromArgb(30, 30, 40); 
             this.StartPosition = FormStartPosition.CenterScreen;
-            this.Size = new Size(800, 600); // Tamaño mediano
+            this.Size = new Size(800, 600); 
             this.Region = Region.FromHrgn(CreateRoundRectRgn(0, 0, Width, Height, 20, 20));
         }
 
@@ -46,7 +46,7 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
             EstilosUI.AplicarEstiloLabel(lblTitulo);
             Controls.Add(lblTitulo);
 
-            // Panel con scroll para contenido
+
             panelContenido = new Panel()
             {
                 Location = new Point(40, 80),
@@ -63,7 +63,7 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
                 Font = new Font("Segoe UI", 12, FontStyle.Regular),
                 ForeColor = Color.White,
                 AutoSize = true,
-                MaximumSize = new Size(panelContenido.Width - 20, 0), // ancho máximo, alto variable
+                MaximumSize = new Size(panelContenido.Width - 20, 0), 
                 TextAlign = ContentAlignment.MiddleCenter,
                 Location = new Point(0, 0)
             };
@@ -87,7 +87,7 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
                 panelContenido.Size = new Size(this.ClientSize.Width - 80, this.ClientSize.Height - 170);
                 btnCerrar.Location = new Point((this.ClientSize.Width - btnCerrar.Width) / 2, this.ClientSize.Height - 70);
 
-                // Ajustar el tamaño máximo del label para que el texto se ajuste al nuevo ancho
+
                 lblContenido.MaximumSize = new Size(panelContenido.Width - 20, 0);
             };
         }
