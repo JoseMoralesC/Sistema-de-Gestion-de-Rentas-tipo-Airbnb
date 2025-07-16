@@ -18,6 +18,7 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
         private FlowLayoutPanel panelReservas;
         private Button btnActualizar;
         private Button btnCerrar;
+        private Button btnImprimir;
 
         public HistorialForm()
         {
@@ -140,8 +141,8 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
                     Button btnActualizar = new Button
                     {
                         Text = "Cancelar",
-                        Width = 100,
-                        Height = 30,
+                        Width = 120,
+                        Height = 40,
                         Margin = new Padding(5),
                         Tag = reserva // Guardamos la reserva completa en el botón para poder acceder a ella luego
                     };

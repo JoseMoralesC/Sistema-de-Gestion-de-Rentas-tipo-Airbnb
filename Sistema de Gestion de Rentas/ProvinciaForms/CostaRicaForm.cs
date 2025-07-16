@@ -1,6 +1,4 @@
-﻿using Sistema_de_Gestion_de_Rentas.Controls;  // Asegúrate de que EstilosUI.cs esté en esta carpeta
-using Sistema_de_Gestion_de_Rentas.Forms;
-using System;
+﻿using System;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
@@ -9,62 +7,67 @@ namespace Sistema_de_Gestion_de_Rentas.ProvinciaForms
 {
     public partial class CostaRicaForm : Form
     {
+        private Button btnSalir;
+
         public CostaRicaForm()
         {
             ConfigurarFormulario();
+            InicializarControles();
         }
 
         private void ConfigurarFormulario()
         {
-            // Configuración de la ventana
-            this.WindowState = FormWindowState.Maximized;
-            this.FormBorderStyle = FormBorderStyle.None;
-            this.BackColor = Color.White;
+            // Configuración del formulario
+            this.WindowState = FormWindowState.Maximized;  // Ventana maximizada
+            this.FormBorderStyle = FormBorderStyle.None;   // Sin bordes
+            this.BackColor = Color.White;                  // Fondo blanco
 
-            // Fondo de imagen
+            // Establecer imagen de fondo
             EstablecerFondo();
-
-            // Crear el botón "Volver"
-            CrearBotonVolver();
         }
 
         private void EstablecerFondo()
         {
+            // Ruta de la imagen de fondo
             string fondoRuta = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources", "provincias.jpg");
+
             if (File.Exists(fondoRuta))
             {
+                // Si existe la imagen, se configura como fondo
                 this.BackgroundImage = Image.FromFile(fondoRuta);
-                this.BackgroundImageLayout = ImageLayout.Stretch;  // Ajustar imagen al tamaño de la ventana
+                this.BackgroundImageLayout = ImageLayout.Stretch;  // Ajuste de la imagen al tamaño de la ventana
             }
             else
             {
+                // Si no se encuentra la imagen, se muestra un mensaje
                 MessageBox.Show("La imagen de fondo no se encontró.");
             }
         }
 
-        private void CrearBotonVolver()
+        private void InicializarControles()
         {
-            Button btnVolver = new Button();
-            EstilosUI.AplicarEstiloBoton(btnVolver);  // Aplicamos el estilo desde EstilosUI
-            btnVolver.Text = "Volver";
-            btnVolver.Font = new Font("Arial", 48, FontStyle.Bold); // Tamaño de fuente grande, pero no tan masivo
-            btnVolver.BackColor = Color.FromArgb(0, 102, 204);
-            btnVolver.ForeColor = Color.White;
-            btnVolver.Size = new Size(500, 120); // Un tamaño grande pero dentro de la pantalla
-
-            // Centrar el botón en la parte inferior, asegurándonos que esté visible
-            btnVolver.Location = new Point((this.ClientSize.Width - btnVolver.Width) / 2, this.ClientSize.Height - 170);
-            btnVolver.Click += BtnVolver_Click;
-
-            this.Controls.Add(btnVolver);
+            // Crear el botón de salida
+            btnSalir = new Button();
+            btnSalir.Text = "Salir";
+            btnSalir.Size = new Size(180, 60);
+            btnSalir.Location = new Point((this.ClientSize.Width - btnSalir.Width) / 2, this.ClientSize.Height - btnSalir.Height - 20);
+            btnSalir.BackColor = Color.FromArgb(0, 102, 204);
+            btnSalir.ForeColor = Color.White;
+            btnSalir.Font = new Font("Arial", 16, FontStyle.Bold);
+            btnSalir.Click += BtnSalir_Click; // Evento click del botón
+            this.Controls.Add(btnSalir);
         }
 
-        // Evento para regresar al PanelHuespedForm
-        private void BtnVolver_Click(object sender, EventArgs e)
+        private void BtnSalir_Click(object sender, EventArgs e)
         {
-            PanelHuespedForm panelHuespedForm = new PanelHuespedForm();
-            panelHuespedForm.Show();
+            // Cierra el formulario
             this.Close();
+        }
+
+        // Evento para ajustar la posición del botón al redimensionar la ventana
+        private void CostaRicaForm_Resize(object sender, EventArgs e)
+        {
+            btnSalir.Location = new Point((this.ClientSize.Width - btnSalir.Width) / 2, this.ClientSize.Height - btnSalir.Height - 20);
         }
     }
 }
