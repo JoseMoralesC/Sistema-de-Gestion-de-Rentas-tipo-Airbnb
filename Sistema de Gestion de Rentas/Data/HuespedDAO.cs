@@ -271,5 +271,49 @@ namespace Sistema_de_Gestion_de_Rentas.Data
 
             return null;
         }
+        public static bool ActualizarHuesped(Huesped huesped)
+        {
+            try
+            {
+                Conexion conexion = new Conexion();
+                using (var conn = conexion.ObtenerConexion())
+                {
+                    string sql = @"
+                UPDATE Huespedes SET
+                    usuario = @usuario,
+                    contrasena = @contrasena,
+                    nombre = @nombre,
+                    primer_apellido = @primer_apellido,
+                    segundo_apellido = @segundo_apellido,
+                    correo = @correo,
+                    telefono = @telefono,
+                    pais_origen = @pais_origen
+                WHERE identificacion = @identificacion;
+            ";
+
+                    using (var cmd = new NpgsqlCommand(sql, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@usuario", huesped.Usuario);
+                        cmd.Parameters.AddWithValue("@contrasena", huesped.Contrasena);
+                        cmd.Parameters.AddWithValue("@nombre", huesped.Nombre);
+                        cmd.Parameters.AddWithValue("@primer_apellido", huesped.PrimerApellido);
+                        cmd.Parameters.AddWithValue("@segundo_apellido", (object)huesped.SegundoApellido ?? DBNull.Value);
+                        cmd.Parameters.AddWithValue("@correo", (object)huesped.Correo ?? DBNull.Value);
+                        cmd.Parameters.AddWithValue("@telefono", (object)huesped.Telefono ?? DBNull.Value);
+                        cmd.Parameters.AddWithValue("@pais_origen", (object)huesped.PaisOrigen ?? DBNull.Value);
+                        cmd.Parameters.AddWithValue("@identificacion", huesped.Identificacion);
+
+                        int filasAfectadas = cmd.ExecuteNonQuery();
+                        return filasAfectadas > 0;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"Error al actualizar huésped: {ex.Message}");
+                return false;
+            }
+        }
+
     }
 }

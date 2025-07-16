@@ -65,6 +65,10 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
             // Etiqueta "Bienvenido"
             lblBienvenida = new Label();
             EstilosPanelHuesped.EstiloLabelBienvenida(lblBienvenida);
+            lblBienvenida.Text = "Bienvenido a su panel de usuario";  // El mensaje
+            lblBienvenida.AutoSize = true;
+            lblBienvenida.TextAlign = ContentAlignment.TopCenter;
+            lblBienvenida.Location = new Point((this.ClientSize.Width / 2) - (lblBienvenida.Width / 2), 50);  
             Controls.Add(lblBienvenida);
 
             // Banner
@@ -95,10 +99,10 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
             provinciasTable.CellBorderStyle = TableLayoutPanelCellBorderStyle.None;
             Controls.Add(provinciasTable);
 
-            // Posiciones iniciales de los botones
-            btnCerrarSesion.Location = new Point(50, 50);
-            btnPerfil.Location = new Point((this.ClientSize.Width / 2) - (btnPerfil.Width / 2), 50);
-            btnNosotros.Location = new Point(this.ClientSize.Width - btnNosotros.Width - 50, 50);
+            // Posiciones iniciales de los botones 
+            btnCerrarSesion.Location = new Point(50, this.ClientSize.Height - 100);
+            btnPerfil.Location = new Point((this.ClientSize.Width / 2) - (btnPerfil.Width / 2), this.ClientSize.Height - 100);
+            btnNosotros.Location = new Point(this.ClientSize.Width - btnNosotros.Width - 50, this.ClientSize.Height - 100);
 
             // Ajustar todo al redimensionar
             this.Resize += (s, e) =>
@@ -107,8 +111,10 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
                 lblMensaje.Size = new Size(this.ClientSize.Width - 100, 30);
                 provinciasTable.Size = new Size(this.ClientSize.Width - 100, 520);
 
-                btnPerfil.Location = new Point((this.ClientSize.Width / 2) - (btnPerfil.Width / 2), 50);
-                btnNosotros.Location = new Point(this.ClientSize.Width - btnNosotros.Width - 50, 50);
+                // Mantener los botones en la parte inferior
+                btnCerrarSesion.Location = new Point(50, this.ClientSize.Height - 100);
+                btnPerfil.Location = new Point((this.ClientSize.Width / 2) - (btnPerfil.Width / 2), this.ClientSize.Height - 100);
+                btnNosotros.Location = new Point(this.ClientSize.Width - btnNosotros.Width - 50, this.ClientSize.Height - 100);
             };
         }
 
@@ -155,6 +161,7 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
         private void AbrirFormularioProvincia(string provincia, int provinciaId)
         {
             CustomMessageBoxForm.Mostrar(this, $"¿Deseas abrir los hospedajes de {provincia}?");
+
             if (DialogResult.OK == DialogResult.OK)
             {
                 switch (provincia)
@@ -165,8 +172,8 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
                         break;
 
                     case "San Jose":
-                         SanJoseForm sanJoseForm = new SanJoseForm(provinciaId);
-                         sanJoseForm.Show();
+                        SanJoseForm sanJoseForm = new SanJoseForm(provinciaId);
+                        sanJoseForm.Show();
                         break;
 
                     case "Alajuela":
@@ -211,14 +218,12 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
 
         private void BtnPerfil_Click(object sender, EventArgs e)
         {
-            // Crear instancia del formulario PerfilForm
+            
             var perfilForm = new PerfilForm();
 
-            // Mostrar el formulario como ventana modal (bloquea el formulario padre)
             perfilForm.ShowDialog();
 
-            // Si prefieres que sea no modal (puedes interactuar con otros formularios), usa:
-            // perfilForm.Show();
+
         }
 
         private void BtnNosotros_Click(object sender, EventArgs e)

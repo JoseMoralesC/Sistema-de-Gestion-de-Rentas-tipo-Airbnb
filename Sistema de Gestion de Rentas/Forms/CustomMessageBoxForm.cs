@@ -123,36 +123,40 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
 
         // Métodos estáticos para mostrar el cuadro de mensaje
 
+        // Método sin IWin32Window, solo con mensaje
         public static DialogResult Mostrar(string mensaje)
         {
             using var box = new CustomMessageBoxForm(mensaje);
             box._showTwoButtons = false;
-            return box.ShowDialog();
+            return box.ShowDialog();  // No se pasa IWin32Window
         }
 
+        // Método con IWin32Window y mensaje
         public static DialogResult Mostrar(IWin32Window owner, string mensaje)
         {
             using var box = new CustomMessageBoxForm(mensaje);
             box._showTwoButtons = false;
-            return box.ShowDialog(owner);
+            return box.ShowDialog(owner);  // Aquí sí pasamos IWin32Window
         }
 
+        // Método con opciones
         public static DialogResult MostrarOpciones(string mensaje, string opcion1 = "Sí", string opcion2 = "No")
         {
             using var box = new CustomMessageBoxForm(mensaje);
             box._showTwoButtons = true;
             box._opcion1 = opcion1;
             box._opcion2 = opcion2;
-            return box.ShowDialog();
+            return box.ShowDialog();  // No se pasa IWin32Window
         }
 
+        // Método con opciones y IWin32Window
         public static DialogResult MostrarOpciones(IWin32Window owner, string mensaje, string opcion1 = "Sí", string opcion2 = "No")
         {
             using var box = new CustomMessageBoxForm(mensaje);
             box._showTwoButtons = true;
             box._opcion1 = opcion1;
             box._opcion2 = opcion2;
-            return box.ShowDialog(owner);
+            return box.ShowDialog(owner);  // Aquí pasamos IWin32Window
         }
     }
 }

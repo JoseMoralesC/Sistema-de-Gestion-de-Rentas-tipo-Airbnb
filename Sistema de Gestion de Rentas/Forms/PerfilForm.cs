@@ -19,6 +19,9 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
         private Label lblCorreo;
         private Label lblTelefono;
         private Button btnCerrar;
+        private Button btnEditar;
+        private Button btnHistorial;
+
 
         public PerfilForm()
         {
@@ -71,6 +74,31 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
             EstilosUI.AplicarEstiloBoton(btnCerrar);
             btnCerrar.Click += (s, e) => this.Close();
             Controls.Add(btnCerrar);
+
+            // Botón Editar
+            btnEditar = new Button
+            {
+                Text = "Editar",
+                Width = 120,
+                Height = 40,
+                Location = new Point((this.ClientSize.Width - 250) / 2, this.ClientSize.Height - 120) // Izquierda
+            };
+            EstilosUI.AplicarEstiloBoton(btnEditar);
+            btnEditar.Click += BtnEditar_Click;
+            Controls.Add(btnEditar);
+
+            // Botón Historial
+            btnHistorial = new Button
+            {
+                Text = "Historial",
+                Width = 120,
+                Height = 40,
+                Location = new Point((this.ClientSize.Width + 10) / 2, this.ClientSize.Height - 120) // Derecha
+            };
+            EstilosUI.AplicarEstiloBoton(btnHistorial);
+            btnHistorial.Click += BtnHistorial_Click;
+            Controls.Add(btnHistorial);
+
         }
 
         private Label CrearLabel(string texto, int top)
@@ -107,5 +135,17 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
 
             return huesped;
         }
+        private void BtnEditar_Click(object sender, EventArgs e)
+        {
+            EditarForm editarForm = new EditarForm();
+            editarForm.ShowDialog(); // Modal
+        }
+
+        private void BtnHistorial_Click(object sender, EventArgs e)
+        {
+            HistorialForm historialForm = new HistorialForm();
+            historialForm.ShowDialog(); // Modal
+        }
+
     }
 }
