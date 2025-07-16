@@ -150,7 +150,33 @@ namespace Sistema_de_Gestion_de_Rentas.Forms
                 provinciasTable.Controls.Add(card, i % 4, i / 4);
                 i++;
             }
+
+            // Ahora agregar el card para Costa Rica
+            ProvinciaCard cardCostaRica = new ProvinciaCard
+            {
+                Titulo = "Costa Rica",
+                Imagen = CargarImagenProvincia("costarica") // Suponiendo que tienes una imagen con este nombre
+            };
+
+            cardCostaRica.CardClick += (s, e) => AbrirFormularioCostaRica();
+            cardCostaRica.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+
+            provinciasTable.Controls.Add(cardCostaRica, i % 4, i / 4);
         }
+
+        private void AbrirFormularioCostaRica()
+        {
+            // Mostrar un mensaje personalizado
+            CustomMessageBoxForm.Mostrar(this, "¿Desea ver el mapa de Costa Rica?");
+
+            if (DialogResult.OK == DialogResult.OK)
+            {
+                // Si el usuario acepta, abre el formulario de Costa Rica
+                CostaRicaForm costaRicaForm = new CostaRicaForm();
+                costaRicaForm.Show();
+            }
+        }
+        
 
         private Image CargarImagenProvincia(string nombreArchivo)
         {
