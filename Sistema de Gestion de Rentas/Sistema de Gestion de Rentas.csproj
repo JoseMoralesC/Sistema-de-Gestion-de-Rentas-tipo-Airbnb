@@ -16,7 +16,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="itext7" Version="9.2.0" />
+		<PackageReference Include="itext7" Version="7.1.9" />
 		<PackageReference Include="Npgsql" Version="9.0.3" />
 
 		<Content Include="Resources\Inicio_Fondo.jpg">
